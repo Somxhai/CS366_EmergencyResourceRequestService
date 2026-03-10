@@ -1,5 +1,4 @@
 import { randomUUIDv7 } from "bun";
-import { PrismaClient } from "../generated/prisma/client";
 import { prisma } from "../lib/prisma";
 import type { ResourceModel } from "./model";
 import { status } from "elysia";
