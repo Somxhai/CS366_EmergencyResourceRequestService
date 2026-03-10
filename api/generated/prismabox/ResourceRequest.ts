@@ -8,7 +8,10 @@ export const ResourceRequestPlain = t.Object(
   {
     id: t.String(),
     incidentId: t.String(),
-    priority: t.String(),
+    priority: t.Union(
+      [t.Literal("LOW"), t.Literal("NORMAL"), t.Literal("CRITICAL")],
+      { additionalProperties: false },
+    ),
     requestFor: t.String(),
     status: t.Union(
       [t.Literal("NEW"), t.Literal("IN_PROGRESS"), t.Literal("CLOSED")],
@@ -51,13 +54,29 @@ export const ResourceRequestRelations = t.Object(
       ),
       { additionalProperties: false },
     ),
+    assignTeams: t.Array(
+      t.Object(
+        {
+          id: t.String(),
+          requestId: t.String(),
+          teamId: t.String(),
+          assignedAt: t.Date(),
+        },
+        { additionalProperties: false },
+      ),
+      { additionalProperties: false },
+    ),
   },
   { additionalProperties: false },
 );
 
 export const ResourceRequestPlainInputCreate = t.Object(
   {
-    priority: t.String(),
+    priority: t.Optional(
+      t.Union([t.Literal("LOW"), t.Literal("NORMAL"), t.Literal("CRITICAL")], {
+        additionalProperties: false,
+      }),
+    ),
     requestFor: t.String(),
     status: t.Optional(
       t.Union(
@@ -78,7 +97,11 @@ export const ResourceRequestPlainInputCreate = t.Object(
 
 export const ResourceRequestPlainInputUpdate = t.Object(
   {
-    priority: t.Optional(t.String()),
+    priority: t.Optional(
+      t.Union([t.Literal("LOW"), t.Literal("NORMAL"), t.Literal("CRITICAL")], {
+        additionalProperties: false,
+      }),
+    ),
     requestFor: t.Optional(t.String()),
     status: t.Optional(
       t.Union(
@@ -116,6 +139,22 @@ export const ResourceRequestRelationsInputCreate = t.Object(
       ),
     ),
     extraItems: t.Optional(
+      t.Object(
+        {
+          connect: t.Array(
+            t.Object(
+              {
+                id: t.String({ additionalProperties: false }),
+              },
+              { additionalProperties: false },
+            ),
+            { additionalProperties: false },
+          ),
+        },
+        { additionalProperties: false },
+      ),
+    ),
+    assignTeams: t.Optional(
       t.Object(
         {
           connect: t.Array(
@@ -188,6 +227,31 @@ export const ResourceRequestRelationsInputUpdate = t.Partial(
           { additionalProperties: false },
         ),
       ),
+      assignTeams: t.Partial(
+        t.Object(
+          {
+            connect: t.Array(
+              t.Object(
+                {
+                  id: t.String({ additionalProperties: false }),
+                },
+                { additionalProperties: false },
+              ),
+              { additionalProperties: false },
+            ),
+            disconnect: t.Array(
+              t.Object(
+                {
+                  id: t.String({ additionalProperties: false }),
+                },
+                { additionalProperties: false },
+              ),
+              { additionalProperties: false },
+            ),
+          },
+          { additionalProperties: false },
+        ),
+      ),
     },
     { additionalProperties: false },
   ),
@@ -203,7 +267,10 @@ export const ResourceRequestWhere = t.Partial(
           OR: t.Array(Self, { additionalProperties: false }),
           id: t.String(),
           incidentId: t.String(),
-          priority: t.String(),
+          priority: t.Union(
+            [t.Literal("LOW"), t.Literal("NORMAL"), t.Literal("CRITICAL")],
+            { additionalProperties: false },
+          ),
           requestFor: t.String(),
           status: t.Union(
             [t.Literal("NEW"), t.Literal("IN_PROGRESS"), t.Literal("CLOSED")],
@@ -253,7 +320,10 @@ export const ResourceRequestWhereUnique = t.Recursive(
             {
               id: t.String(),
               incidentId: t.String(),
-              priority: t.String(),
+              priority: t.Union(
+                [t.Literal("LOW"), t.Literal("NORMAL"), t.Literal("CRITICAL")],
+                { additionalProperties: false },
+              ),
               requestFor: t.String(),
               status: t.Union(
                 [
@@ -297,6 +367,7 @@ export const ResourceRequestSelect = t.Partial(
       longitude: t.Boolean(),
       items: t.Boolean(),
       extraItems: t.Boolean(),
+      assignTeams: t.Boolean(),
       _count: t.Boolean(),
     },
     { additionalProperties: false },
@@ -306,9 +377,11 @@ export const ResourceRequestSelect = t.Partial(
 export const ResourceRequestInclude = t.Partial(
   t.Object(
     {
+      priority: t.Boolean(),
       status: t.Boolean(),
       items: t.Boolean(),
       extraItems: t.Boolean(),
+      assignTeams: t.Boolean(),
       _count: t.Boolean(),
     },
     { additionalProperties: false },
@@ -322,9 +395,6 @@ export const ResourceRequestOrderBy = t.Partial(
         additionalProperties: false,
       }),
       incidentId: t.Union([t.Literal("asc"), t.Literal("desc")], {
-        additionalProperties: false,
-      }),
-      priority: t.Union([t.Literal("asc"), t.Literal("desc")], {
         additionalProperties: false,
       }),
       requestFor: t.Union([t.Literal("asc"), t.Literal("desc")], {

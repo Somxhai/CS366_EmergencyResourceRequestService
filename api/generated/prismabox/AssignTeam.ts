@@ -4,17 +4,17 @@ import { __transformDate__ } from "./__transformDate__";
 
 import { __nullable__ } from "./__nullable__";
 
-export const RequestedItemPlain = t.Object(
+export const AssignTeamPlain = t.Object(
   {
     id: t.String(),
     requestId: t.String(),
-    itemId: t.String(),
-    amount: t.Integer(),
+    teamId: t.String(),
+    assignedAt: t.Date(),
   },
   { additionalProperties: false },
 );
 
-export const RequestedItemRelations = t.Object(
+export const AssignTeamRelations = t.Object(
   {
     request: t.Object(
       {
@@ -43,17 +43,17 @@ export const RequestedItemRelations = t.Object(
   { additionalProperties: false },
 );
 
-export const RequestedItemPlainInputCreate = t.Object(
-  { amount: t.Integer() },
+export const AssignTeamPlainInputCreate = t.Object(
+  { assignedAt: t.Optional(t.Date()) },
   { additionalProperties: false },
 );
 
-export const RequestedItemPlainInputUpdate = t.Object(
-  { amount: t.Optional(t.Integer()) },
+export const AssignTeamPlainInputUpdate = t.Object(
+  { assignedAt: t.Optional(t.Date()) },
   { additionalProperties: false },
 );
 
-export const RequestedItemRelationsInputCreate = t.Object(
+export const AssignTeamRelationsInputCreate = t.Object(
   {
     request: t.Object(
       {
@@ -70,7 +70,7 @@ export const RequestedItemRelationsInputCreate = t.Object(
   { additionalProperties: false },
 );
 
-export const RequestedItemRelationsInputUpdate = t.Partial(
+export const AssignTeamRelationsInputUpdate = t.Partial(
   t.Object(
     {
       request: t.Object(
@@ -89,7 +89,7 @@ export const RequestedItemRelationsInputUpdate = t.Partial(
   ),
 );
 
-export const RequestedItemWhere = t.Partial(
+export const AssignTeamWhere = t.Partial(
   t.Recursive(
     (Self) =>
       t.Object(
@@ -99,16 +99,16 @@ export const RequestedItemWhere = t.Partial(
           OR: t.Array(Self, { additionalProperties: false }),
           id: t.String(),
           requestId: t.String(),
-          itemId: t.String(),
-          amount: t.Integer(),
+          teamId: t.String(),
+          assignedAt: t.Date(),
         },
         { additionalProperties: false },
       ),
-    { $id: "RequestedItem" },
+    { $id: "AssignTeam" },
   ),
 );
 
-export const RequestedItemWhereUnique = t.Recursive(
+export const AssignTeamWhereUnique = t.Recursive(
   (Self) =>
     t.Intersect(
       [
@@ -138,8 +138,8 @@ export const RequestedItemWhereUnique = t.Recursive(
             {
               id: t.String(),
               requestId: t.String(),
-              itemId: t.String(),
-              amount: t.Integer(),
+              teamId: t.String(),
+              assignedAt: t.Date(),
             },
             { additionalProperties: false },
           ),
@@ -147,16 +147,16 @@ export const RequestedItemWhereUnique = t.Recursive(
       ],
       { additionalProperties: false },
     ),
-  { $id: "RequestedItem" },
+  { $id: "AssignTeam" },
 );
 
-export const RequestedItemSelect = t.Partial(
+export const AssignTeamSelect = t.Partial(
   t.Object(
     {
       id: t.Boolean(),
       requestId: t.Boolean(),
-      itemId: t.Boolean(),
-      amount: t.Boolean(),
+      teamId: t.Boolean(),
+      assignedAt: t.Boolean(),
       request: t.Boolean(),
       _count: t.Boolean(),
     },
@@ -164,14 +164,14 @@ export const RequestedItemSelect = t.Partial(
   ),
 );
 
-export const RequestedItemInclude = t.Partial(
+export const AssignTeamInclude = t.Partial(
   t.Object(
     { request: t.Boolean(), _count: t.Boolean() },
     { additionalProperties: false },
   ),
 );
 
-export const RequestedItemOrderBy = t.Partial(
+export const AssignTeamOrderBy = t.Partial(
   t.Object(
     {
       id: t.Union([t.Literal("asc"), t.Literal("desc")], {
@@ -180,10 +180,10 @@ export const RequestedItemOrderBy = t.Partial(
       requestId: t.Union([t.Literal("asc"), t.Literal("desc")], {
         additionalProperties: false,
       }),
-      itemId: t.Union([t.Literal("asc"), t.Literal("desc")], {
+      teamId: t.Union([t.Literal("asc"), t.Literal("desc")], {
         additionalProperties: false,
       }),
-      amount: t.Union([t.Literal("asc"), t.Literal("desc")], {
+      assignedAt: t.Union([t.Literal("asc"), t.Literal("desc")], {
         additionalProperties: false,
       }),
     },
@@ -191,17 +191,16 @@ export const RequestedItemOrderBy = t.Partial(
   ),
 );
 
-export const RequestedItem = t.Composite(
-  [RequestedItemPlain, RequestedItemRelations],
+export const AssignTeam = t.Composite([AssignTeamPlain, AssignTeamRelations], {
+  additionalProperties: false,
+});
+
+export const AssignTeamInputCreate = t.Composite(
+  [AssignTeamPlainInputCreate, AssignTeamRelationsInputCreate],
   { additionalProperties: false },
 );
 
-export const RequestedItemInputCreate = t.Composite(
-  [RequestedItemPlainInputCreate, RequestedItemRelationsInputCreate],
-  { additionalProperties: false },
-);
-
-export const RequestedItemInputUpdate = t.Composite(
-  [RequestedItemPlainInputUpdate, RequestedItemRelationsInputUpdate],
+export const AssignTeamInputUpdate = t.Composite(
+  [AssignTeamPlainInputUpdate, AssignTeamRelationsInputUpdate],
   { additionalProperties: false },
 );

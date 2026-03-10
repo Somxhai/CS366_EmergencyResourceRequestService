@@ -39,7 +39,7 @@ export type ResourceRequestSumAggregateOutputType = {
 export type ResourceRequestMinAggregateOutputType = {
   id: string | null
   incidentId: string | null
-  priority: string | null
+  priority: $Enums.ResourcePriority | null
   requestFor: string | null
   status: $Enums.ResourceRequestStatus | null
   requestedAt: Date | null
@@ -54,7 +54,7 @@ export type ResourceRequestMinAggregateOutputType = {
 export type ResourceRequestMaxAggregateOutputType = {
   id: string | null
   incidentId: string | null
-  priority: string | null
+  priority: $Enums.ResourcePriority | null
   requestFor: string | null
   status: $Enums.ResourceRequestStatus | null
   requestedAt: Date | null
@@ -228,7 +228,7 @@ export type ResourceRequestGroupByArgs<ExtArgs extends runtime.Types.Extensions.
 export type ResourceRequestGroupByOutputType = {
   id: string
   incidentId: string
-  priority: string
+  priority: $Enums.ResourcePriority
   requestFor: string
   status: $Enums.ResourceRequestStatus
   requestedAt: Date
@@ -266,7 +266,7 @@ export type ResourceRequestWhereInput = {
   NOT?: Prisma.ResourceRequestWhereInput | Prisma.ResourceRequestWhereInput[]
   id?: Prisma.StringFilter<"ResourceRequest"> | string
   incidentId?: Prisma.StringFilter<"ResourceRequest"> | string
-  priority?: Prisma.StringFilter<"ResourceRequest"> | string
+  priority?: Prisma.EnumResourcePriorityFilter<"ResourceRequest"> | $Enums.ResourcePriority
   requestFor?: Prisma.StringFilter<"ResourceRequest"> | string
   status?: Prisma.EnumResourceRequestStatusFilter<"ResourceRequest"> | $Enums.ResourceRequestStatus
   requestedAt?: Prisma.DateTimeFilter<"ResourceRequest"> | Date | string
@@ -278,6 +278,7 @@ export type ResourceRequestWhereInput = {
   longitude?: Prisma.FloatFilter<"ResourceRequest"> | number
   items?: Prisma.RequestedItemListRelationFilter
   extraItems?: Prisma.RequestedExtraItemListRelationFilter
+  assignTeams?: Prisma.AssignTeamListRelationFilter
 }
 
 export type ResourceRequestOrderByWithRelationInput = {
@@ -295,6 +296,7 @@ export type ResourceRequestOrderByWithRelationInput = {
   longitude?: Prisma.SortOrder
   items?: Prisma.RequestedItemOrderByRelationAggregateInput
   extraItems?: Prisma.RequestedExtraItemOrderByRelationAggregateInput
+  assignTeams?: Prisma.AssignTeamOrderByRelationAggregateInput
 }
 
 export type ResourceRequestWhereUniqueInput = Prisma.AtLeast<{
@@ -303,7 +305,7 @@ export type ResourceRequestWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ResourceRequestWhereInput[]
   NOT?: Prisma.ResourceRequestWhereInput | Prisma.ResourceRequestWhereInput[]
   incidentId?: Prisma.StringFilter<"ResourceRequest"> | string
-  priority?: Prisma.StringFilter<"ResourceRequest"> | string
+  priority?: Prisma.EnumResourcePriorityFilter<"ResourceRequest"> | $Enums.ResourcePriority
   requestFor?: Prisma.StringFilter<"ResourceRequest"> | string
   status?: Prisma.EnumResourceRequestStatusFilter<"ResourceRequest"> | $Enums.ResourceRequestStatus
   requestedAt?: Prisma.DateTimeFilter<"ResourceRequest"> | Date | string
@@ -315,6 +317,7 @@ export type ResourceRequestWhereUniqueInput = Prisma.AtLeast<{
   longitude?: Prisma.FloatFilter<"ResourceRequest"> | number
   items?: Prisma.RequestedItemListRelationFilter
   extraItems?: Prisma.RequestedExtraItemListRelationFilter
+  assignTeams?: Prisma.AssignTeamListRelationFilter
 }, "id">
 
 export type ResourceRequestOrderByWithAggregationInput = {
@@ -343,7 +346,7 @@ export type ResourceRequestScalarWhereWithAggregatesInput = {
   NOT?: Prisma.ResourceRequestScalarWhereWithAggregatesInput | Prisma.ResourceRequestScalarWhereWithAggregatesInput[]
   id?: Prisma.StringWithAggregatesFilter<"ResourceRequest"> | string
   incidentId?: Prisma.StringWithAggregatesFilter<"ResourceRequest"> | string
-  priority?: Prisma.StringWithAggregatesFilter<"ResourceRequest"> | string
+  priority?: Prisma.EnumResourcePriorityWithAggregatesFilter<"ResourceRequest"> | $Enums.ResourcePriority
   requestFor?: Prisma.StringWithAggregatesFilter<"ResourceRequest"> | string
   status?: Prisma.EnumResourceRequestStatusWithAggregatesFilter<"ResourceRequest"> | $Enums.ResourceRequestStatus
   requestedAt?: Prisma.DateTimeWithAggregatesFilter<"ResourceRequest"> | Date | string
@@ -358,7 +361,7 @@ export type ResourceRequestScalarWhereWithAggregatesInput = {
 export type ResourceRequestCreateInput = {
   id?: string
   incidentId: string
-  priority: string
+  priority?: $Enums.ResourcePriority
   requestFor: string
   status?: $Enums.ResourceRequestStatus
   requestedAt?: Date | string
@@ -370,12 +373,13 @@ export type ResourceRequestCreateInput = {
   longitude: number
   items?: Prisma.RequestedItemCreateNestedManyWithoutRequestInput
   extraItems?: Prisma.RequestedExtraItemCreateNestedManyWithoutRequestInput
+  assignTeams?: Prisma.AssignTeamCreateNestedManyWithoutRequestInput
 }
 
 export type ResourceRequestUncheckedCreateInput = {
   id?: string
   incidentId: string
-  priority: string
+  priority?: $Enums.ResourcePriority
   requestFor: string
   status?: $Enums.ResourceRequestStatus
   requestedAt?: Date | string
@@ -387,12 +391,13 @@ export type ResourceRequestUncheckedCreateInput = {
   longitude: number
   items?: Prisma.RequestedItemUncheckedCreateNestedManyWithoutRequestInput
   extraItems?: Prisma.RequestedExtraItemUncheckedCreateNestedManyWithoutRequestInput
+  assignTeams?: Prisma.AssignTeamUncheckedCreateNestedManyWithoutRequestInput
 }
 
 export type ResourceRequestUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   incidentId?: Prisma.StringFieldUpdateOperationsInput | string
-  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumResourcePriorityFieldUpdateOperationsInput | $Enums.ResourcePriority
   requestFor?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumResourceRequestStatusFieldUpdateOperationsInput | $Enums.ResourceRequestStatus
   requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -404,12 +409,13 @@ export type ResourceRequestUpdateInput = {
   longitude?: Prisma.FloatFieldUpdateOperationsInput | number
   items?: Prisma.RequestedItemUpdateManyWithoutRequestNestedInput
   extraItems?: Prisma.RequestedExtraItemUpdateManyWithoutRequestNestedInput
+  assignTeams?: Prisma.AssignTeamUpdateManyWithoutRequestNestedInput
 }
 
 export type ResourceRequestUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   incidentId?: Prisma.StringFieldUpdateOperationsInput | string
-  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumResourcePriorityFieldUpdateOperationsInput | $Enums.ResourcePriority
   requestFor?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumResourceRequestStatusFieldUpdateOperationsInput | $Enums.ResourceRequestStatus
   requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -421,12 +427,13 @@ export type ResourceRequestUncheckedUpdateInput = {
   longitude?: Prisma.FloatFieldUpdateOperationsInput | number
   items?: Prisma.RequestedItemUncheckedUpdateManyWithoutRequestNestedInput
   extraItems?: Prisma.RequestedExtraItemUncheckedUpdateManyWithoutRequestNestedInput
+  assignTeams?: Prisma.AssignTeamUncheckedUpdateManyWithoutRequestNestedInput
 }
 
 export type ResourceRequestCreateManyInput = {
   id?: string
   incidentId: string
-  priority: string
+  priority?: $Enums.ResourcePriority
   requestFor: string
   status?: $Enums.ResourceRequestStatus
   requestedAt?: Date | string
@@ -441,7 +448,7 @@ export type ResourceRequestCreateManyInput = {
 export type ResourceRequestUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   incidentId?: Prisma.StringFieldUpdateOperationsInput | string
-  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumResourcePriorityFieldUpdateOperationsInput | $Enums.ResourcePriority
   requestFor?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumResourceRequestStatusFieldUpdateOperationsInput | $Enums.ResourceRequestStatus
   requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -456,7 +463,7 @@ export type ResourceRequestUpdateManyMutationInput = {
 export type ResourceRequestUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   incidentId?: Prisma.StringFieldUpdateOperationsInput | string
-  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumResourcePriorityFieldUpdateOperationsInput | $Enums.ResourcePriority
   requestFor?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumResourceRequestStatusFieldUpdateOperationsInput | $Enums.ResourceRequestStatus
   requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -532,6 +539,10 @@ export type StringFieldUpdateOperationsInput = {
   set?: string
 }
 
+export type EnumResourcePriorityFieldUpdateOperationsInput = {
+  set?: $Enums.ResourcePriority
+}
+
 export type EnumResourceRequestStatusFieldUpdateOperationsInput = {
   set?: $Enums.ResourceRequestStatus
 }
@@ -580,10 +591,24 @@ export type ResourceRequestUpdateOneRequiredWithoutExtraItemsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ResourceRequestUpdateToOneWithWhereWithoutExtraItemsInput, Prisma.ResourceRequestUpdateWithoutExtraItemsInput>, Prisma.ResourceRequestUncheckedUpdateWithoutExtraItemsInput>
 }
 
+export type ResourceRequestCreateNestedOneWithoutAssignTeamsInput = {
+  create?: Prisma.XOR<Prisma.ResourceRequestCreateWithoutAssignTeamsInput, Prisma.ResourceRequestUncheckedCreateWithoutAssignTeamsInput>
+  connectOrCreate?: Prisma.ResourceRequestCreateOrConnectWithoutAssignTeamsInput
+  connect?: Prisma.ResourceRequestWhereUniqueInput
+}
+
+export type ResourceRequestUpdateOneRequiredWithoutAssignTeamsNestedInput = {
+  create?: Prisma.XOR<Prisma.ResourceRequestCreateWithoutAssignTeamsInput, Prisma.ResourceRequestUncheckedCreateWithoutAssignTeamsInput>
+  connectOrCreate?: Prisma.ResourceRequestCreateOrConnectWithoutAssignTeamsInput
+  upsert?: Prisma.ResourceRequestUpsertWithoutAssignTeamsInput
+  connect?: Prisma.ResourceRequestWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResourceRequestUpdateToOneWithWhereWithoutAssignTeamsInput, Prisma.ResourceRequestUpdateWithoutAssignTeamsInput>, Prisma.ResourceRequestUncheckedUpdateWithoutAssignTeamsInput>
+}
+
 export type ResourceRequestCreateWithoutItemsInput = {
   id?: string
   incidentId: string
-  priority: string
+  priority?: $Enums.ResourcePriority
   requestFor: string
   status?: $Enums.ResourceRequestStatus
   requestedAt?: Date | string
@@ -594,12 +619,13 @@ export type ResourceRequestCreateWithoutItemsInput = {
   latitude: number
   longitude: number
   extraItems?: Prisma.RequestedExtraItemCreateNestedManyWithoutRequestInput
+  assignTeams?: Prisma.AssignTeamCreateNestedManyWithoutRequestInput
 }
 
 export type ResourceRequestUncheckedCreateWithoutItemsInput = {
   id?: string
   incidentId: string
-  priority: string
+  priority?: $Enums.ResourcePriority
   requestFor: string
   status?: $Enums.ResourceRequestStatus
   requestedAt?: Date | string
@@ -610,6 +636,7 @@ export type ResourceRequestUncheckedCreateWithoutItemsInput = {
   latitude: number
   longitude: number
   extraItems?: Prisma.RequestedExtraItemUncheckedCreateNestedManyWithoutRequestInput
+  assignTeams?: Prisma.AssignTeamUncheckedCreateNestedManyWithoutRequestInput
 }
 
 export type ResourceRequestCreateOrConnectWithoutItemsInput = {
@@ -631,7 +658,7 @@ export type ResourceRequestUpdateToOneWithWhereWithoutItemsInput = {
 export type ResourceRequestUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   incidentId?: Prisma.StringFieldUpdateOperationsInput | string
-  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumResourcePriorityFieldUpdateOperationsInput | $Enums.ResourcePriority
   requestFor?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumResourceRequestStatusFieldUpdateOperationsInput | $Enums.ResourceRequestStatus
   requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -642,12 +669,13 @@ export type ResourceRequestUpdateWithoutItemsInput = {
   latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   longitude?: Prisma.FloatFieldUpdateOperationsInput | number
   extraItems?: Prisma.RequestedExtraItemUpdateManyWithoutRequestNestedInput
+  assignTeams?: Prisma.AssignTeamUpdateManyWithoutRequestNestedInput
 }
 
 export type ResourceRequestUncheckedUpdateWithoutItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   incidentId?: Prisma.StringFieldUpdateOperationsInput | string
-  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumResourcePriorityFieldUpdateOperationsInput | $Enums.ResourcePriority
   requestFor?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumResourceRequestStatusFieldUpdateOperationsInput | $Enums.ResourceRequestStatus
   requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -658,12 +686,13 @@ export type ResourceRequestUncheckedUpdateWithoutItemsInput = {
   latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   longitude?: Prisma.FloatFieldUpdateOperationsInput | number
   extraItems?: Prisma.RequestedExtraItemUncheckedUpdateManyWithoutRequestNestedInput
+  assignTeams?: Prisma.AssignTeamUncheckedUpdateManyWithoutRequestNestedInput
 }
 
 export type ResourceRequestCreateWithoutExtraItemsInput = {
   id?: string
   incidentId: string
-  priority: string
+  priority?: $Enums.ResourcePriority
   requestFor: string
   status?: $Enums.ResourceRequestStatus
   requestedAt?: Date | string
@@ -674,12 +703,13 @@ export type ResourceRequestCreateWithoutExtraItemsInput = {
   latitude: number
   longitude: number
   items?: Prisma.RequestedItemCreateNestedManyWithoutRequestInput
+  assignTeams?: Prisma.AssignTeamCreateNestedManyWithoutRequestInput
 }
 
 export type ResourceRequestUncheckedCreateWithoutExtraItemsInput = {
   id?: string
   incidentId: string
-  priority: string
+  priority?: $Enums.ResourcePriority
   requestFor: string
   status?: $Enums.ResourceRequestStatus
   requestedAt?: Date | string
@@ -690,6 +720,7 @@ export type ResourceRequestUncheckedCreateWithoutExtraItemsInput = {
   latitude: number
   longitude: number
   items?: Prisma.RequestedItemUncheckedCreateNestedManyWithoutRequestInput
+  assignTeams?: Prisma.AssignTeamUncheckedCreateNestedManyWithoutRequestInput
 }
 
 export type ResourceRequestCreateOrConnectWithoutExtraItemsInput = {
@@ -711,7 +742,7 @@ export type ResourceRequestUpdateToOneWithWhereWithoutExtraItemsInput = {
 export type ResourceRequestUpdateWithoutExtraItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   incidentId?: Prisma.StringFieldUpdateOperationsInput | string
-  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumResourcePriorityFieldUpdateOperationsInput | $Enums.ResourcePriority
   requestFor?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumResourceRequestStatusFieldUpdateOperationsInput | $Enums.ResourceRequestStatus
   requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -722,12 +753,13 @@ export type ResourceRequestUpdateWithoutExtraItemsInput = {
   latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   longitude?: Prisma.FloatFieldUpdateOperationsInput | number
   items?: Prisma.RequestedItemUpdateManyWithoutRequestNestedInput
+  assignTeams?: Prisma.AssignTeamUpdateManyWithoutRequestNestedInput
 }
 
 export type ResourceRequestUncheckedUpdateWithoutExtraItemsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   incidentId?: Prisma.StringFieldUpdateOperationsInput | string
-  priority?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumResourcePriorityFieldUpdateOperationsInput | $Enums.ResourcePriority
   requestFor?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumResourceRequestStatusFieldUpdateOperationsInput | $Enums.ResourceRequestStatus
   requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -738,6 +770,91 @@ export type ResourceRequestUncheckedUpdateWithoutExtraItemsInput = {
   latitude?: Prisma.FloatFieldUpdateOperationsInput | number
   longitude?: Prisma.FloatFieldUpdateOperationsInput | number
   items?: Prisma.RequestedItemUncheckedUpdateManyWithoutRequestNestedInput
+  assignTeams?: Prisma.AssignTeamUncheckedUpdateManyWithoutRequestNestedInput
+}
+
+export type ResourceRequestCreateWithoutAssignTeamsInput = {
+  id?: string
+  incidentId: string
+  priority?: $Enums.ResourcePriority
+  requestFor: string
+  status?: $Enums.ResourceRequestStatus
+  requestedAt?: Date | string
+  requesterName: string
+  phone: string
+  address: string
+  description?: string | null
+  latitude: number
+  longitude: number
+  items?: Prisma.RequestedItemCreateNestedManyWithoutRequestInput
+  extraItems?: Prisma.RequestedExtraItemCreateNestedManyWithoutRequestInput
+}
+
+export type ResourceRequestUncheckedCreateWithoutAssignTeamsInput = {
+  id?: string
+  incidentId: string
+  priority?: $Enums.ResourcePriority
+  requestFor: string
+  status?: $Enums.ResourceRequestStatus
+  requestedAt?: Date | string
+  requesterName: string
+  phone: string
+  address: string
+  description?: string | null
+  latitude: number
+  longitude: number
+  items?: Prisma.RequestedItemUncheckedCreateNestedManyWithoutRequestInput
+  extraItems?: Prisma.RequestedExtraItemUncheckedCreateNestedManyWithoutRequestInput
+}
+
+export type ResourceRequestCreateOrConnectWithoutAssignTeamsInput = {
+  where: Prisma.ResourceRequestWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResourceRequestCreateWithoutAssignTeamsInput, Prisma.ResourceRequestUncheckedCreateWithoutAssignTeamsInput>
+}
+
+export type ResourceRequestUpsertWithoutAssignTeamsInput = {
+  update: Prisma.XOR<Prisma.ResourceRequestUpdateWithoutAssignTeamsInput, Prisma.ResourceRequestUncheckedUpdateWithoutAssignTeamsInput>
+  create: Prisma.XOR<Prisma.ResourceRequestCreateWithoutAssignTeamsInput, Prisma.ResourceRequestUncheckedCreateWithoutAssignTeamsInput>
+  where?: Prisma.ResourceRequestWhereInput
+}
+
+export type ResourceRequestUpdateToOneWithWhereWithoutAssignTeamsInput = {
+  where?: Prisma.ResourceRequestWhereInput
+  data: Prisma.XOR<Prisma.ResourceRequestUpdateWithoutAssignTeamsInput, Prisma.ResourceRequestUncheckedUpdateWithoutAssignTeamsInput>
+}
+
+export type ResourceRequestUpdateWithoutAssignTeamsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  incidentId?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumResourcePriorityFieldUpdateOperationsInput | $Enums.ResourcePriority
+  requestFor?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumResourceRequestStatusFieldUpdateOperationsInput | $Enums.ResourceRequestStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requesterName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  items?: Prisma.RequestedItemUpdateManyWithoutRequestNestedInput
+  extraItems?: Prisma.RequestedExtraItemUpdateManyWithoutRequestNestedInput
+}
+
+export type ResourceRequestUncheckedUpdateWithoutAssignTeamsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  incidentId?: Prisma.StringFieldUpdateOperationsInput | string
+  priority?: Prisma.EnumResourcePriorityFieldUpdateOperationsInput | $Enums.ResourcePriority
+  requestFor?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumResourceRequestStatusFieldUpdateOperationsInput | $Enums.ResourceRequestStatus
+  requestedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  requesterName?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  latitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  longitude?: Prisma.FloatFieldUpdateOperationsInput | number
+  items?: Prisma.RequestedItemUncheckedUpdateManyWithoutRequestNestedInput
+  extraItems?: Prisma.RequestedExtraItemUncheckedUpdateManyWithoutRequestNestedInput
 }
 
 
@@ -748,11 +865,13 @@ export type ResourceRequestUncheckedUpdateWithoutExtraItemsInput = {
 export type ResourceRequestCountOutputType = {
   items: number
   extraItems: number
+  assignTeams: number
 }
 
 export type ResourceRequestCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | ResourceRequestCountOutputTypeCountItemsArgs
   extraItems?: boolean | ResourceRequestCountOutputTypeCountExtraItemsArgs
+  assignTeams?: boolean | ResourceRequestCountOutputTypeCountAssignTeamsArgs
 }
 
 /**
@@ -779,6 +898,13 @@ export type ResourceRequestCountOutputTypeCountExtraItemsArgs<ExtArgs extends ru
   where?: Prisma.RequestedExtraItemWhereInput
 }
 
+/**
+ * ResourceRequestCountOutputType without action
+ */
+export type ResourceRequestCountOutputTypeCountAssignTeamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.AssignTeamWhereInput
+}
+
 
 export type ResourceRequestSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -795,6 +921,7 @@ export type ResourceRequestSelect<ExtArgs extends runtime.Types.Extensions.Inter
   longitude?: boolean
   items?: boolean | Prisma.ResourceRequest$itemsArgs<ExtArgs>
   extraItems?: boolean | Prisma.ResourceRequest$extraItemsArgs<ExtArgs>
+  assignTeams?: boolean | Prisma.ResourceRequest$assignTeamsArgs<ExtArgs>
   _count?: boolean | Prisma.ResourceRequestCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["resourceRequest"]>
 
@@ -847,6 +974,7 @@ export type ResourceRequestOmit<ExtArgs extends runtime.Types.Extensions.Interna
 export type ResourceRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | Prisma.ResourceRequest$itemsArgs<ExtArgs>
   extraItems?: boolean | Prisma.ResourceRequest$extraItemsArgs<ExtArgs>
+  assignTeams?: boolean | Prisma.ResourceRequest$assignTeamsArgs<ExtArgs>
   _count?: boolean | Prisma.ResourceRequestCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ResourceRequestIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -857,11 +985,12 @@ export type $ResourceRequestPayload<ExtArgs extends runtime.Types.Extensions.Int
   objects: {
     items: Prisma.$RequestedItemPayload<ExtArgs>[]
     extraItems: Prisma.$RequestedExtraItemPayload<ExtArgs>[]
+    assignTeams: Prisma.$AssignTeamPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     incidentId: string
-    priority: string
+    priority: $Enums.ResourcePriority
     requestFor: string
     status: $Enums.ResourceRequestStatus
     requestedAt: Date
@@ -1267,6 +1396,7 @@ export interface Prisma__ResourceRequestClient<T, Null = never, ExtArgs extends 
   readonly [Symbol.toStringTag]: "PrismaPromise"
   items<T extends Prisma.ResourceRequest$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResourceRequest$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestedItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   extraItems<T extends Prisma.ResourceRequest$extraItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResourceRequest$extraItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RequestedExtraItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignTeams<T extends Prisma.ResourceRequest$assignTeamsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResourceRequest$assignTeamsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AssignTeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1298,7 +1428,7 @@ export interface Prisma__ResourceRequestClient<T, Null = never, ExtArgs extends 
 export interface ResourceRequestFieldRefs {
   readonly id: Prisma.FieldRef<"ResourceRequest", 'String'>
   readonly incidentId: Prisma.FieldRef<"ResourceRequest", 'String'>
-  readonly priority: Prisma.FieldRef<"ResourceRequest", 'String'>
+  readonly priority: Prisma.FieldRef<"ResourceRequest", 'ResourcePriority'>
   readonly requestFor: Prisma.FieldRef<"ResourceRequest", 'String'>
   readonly status: Prisma.FieldRef<"ResourceRequest", 'ResourceRequestStatus'>
   readonly requestedAt: Prisma.FieldRef<"ResourceRequest", 'DateTime'>
@@ -1741,6 +1871,30 @@ export type ResourceRequest$extraItemsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.RequestedExtraItemScalarFieldEnum | Prisma.RequestedExtraItemScalarFieldEnum[]
+}
+
+/**
+ * ResourceRequest.assignTeams
+ */
+export type ResourceRequest$assignTeamsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the AssignTeam
+   */
+  select?: Prisma.AssignTeamSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the AssignTeam
+   */
+  omit?: Prisma.AssignTeamOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.AssignTeamInclude<ExtArgs> | null
+  where?: Prisma.AssignTeamWhereInput
+  orderBy?: Prisma.AssignTeamOrderByWithRelationInput | Prisma.AssignTeamOrderByWithRelationInput[]
+  cursor?: Prisma.AssignTeamWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.AssignTeamScalarFieldEnum | Prisma.AssignTeamScalarFieldEnum[]
 }
 
 /**

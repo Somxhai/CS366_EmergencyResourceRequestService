@@ -386,7 +386,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   ResourceRequest: 'ResourceRequest',
   RequestedItem: 'RequestedItem',
-  RequestedExtraItem: 'RequestedExtraItem'
+  RequestedExtraItem: 'RequestedExtraItem',
+  AssignTeam: 'AssignTeam'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -402,7 +403,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "resourceRequest" | "requestedItem" | "requestedExtraItem"
+    modelProps: "resourceRequest" | "requestedItem" | "requestedExtraItem" | "assignTeam"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -628,6 +629,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AssignTeam: {
+      payload: Prisma.$AssignTeamPayload<ExtArgs>
+      fields: Prisma.AssignTeamFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AssignTeamFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignTeamPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AssignTeamFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignTeamPayload>
+        }
+        findFirst: {
+          args: Prisma.AssignTeamFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignTeamPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AssignTeamFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignTeamPayload>
+        }
+        findMany: {
+          args: Prisma.AssignTeamFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignTeamPayload>[]
+        }
+        create: {
+          args: Prisma.AssignTeamCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignTeamPayload>
+        }
+        createMany: {
+          args: Prisma.AssignTeamCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AssignTeamCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignTeamPayload>[]
+        }
+        delete: {
+          args: Prisma.AssignTeamDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignTeamPayload>
+        }
+        update: {
+          args: Prisma.AssignTeamUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignTeamPayload>
+        }
+        deleteMany: {
+          args: Prisma.AssignTeamDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AssignTeamUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AssignTeamUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignTeamPayload>[]
+        }
+        upsert: {
+          args: Prisma.AssignTeamUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AssignTeamPayload>
+        }
+        aggregate: {
+          args: Prisma.AssignTeamAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAssignTeam>
+        }
+        groupBy: {
+          args: Prisma.AssignTeamGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssignTeamGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AssignTeamCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AssignTeamCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -705,6 +780,16 @@ export const RequestedExtraItemScalarFieldEnum = {
 export type RequestedExtraItemScalarFieldEnum = (typeof RequestedExtraItemScalarFieldEnum)[keyof typeof RequestedExtraItemScalarFieldEnum]
 
 
+export const AssignTeamScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  teamId: 'teamId',
+  assignedAt: 'assignedAt'
+} as const
+
+export type AssignTeamScalarFieldEnum = (typeof AssignTeamScalarFieldEnum)[keyof typeof AssignTeamScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -746,6 +831,20 @@ export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'String[]'
  */
 export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ResourcePriority'
+ */
+export type EnumResourcePriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResourcePriority'>
+    
+
+
+/**
+ * Reference to a field of type 'ResourcePriority[]'
+ */
+export type ListEnumResourcePriorityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ResourcePriority[]'>
     
 
 
@@ -902,6 +1001,7 @@ export type GlobalOmitConfig = {
   resourceRequest?: Prisma.ResourceRequestOmit
   requestedItem?: Prisma.RequestedItemOmit
   requestedExtraItem?: Prisma.RequestedExtraItemOmit
+  assignTeam?: Prisma.AssignTeamOmit
 }
 
 /* Types for Logging */

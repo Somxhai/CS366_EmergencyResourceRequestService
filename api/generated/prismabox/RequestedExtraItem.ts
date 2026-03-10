@@ -20,7 +20,10 @@ export const RequestedExtraItemRelations = t.Object(
       {
         id: t.String(),
         incidentId: t.String(),
-        priority: t.String(),
+        priority: t.Union(
+          [t.Literal("LOW"), t.Literal("NORMAL"), t.Literal("CRITICAL")],
+          { additionalProperties: false },
+        ),
         requestFor: t.String(),
         status: t.Union(
           [t.Literal("NEW"), t.Literal("IN_PROGRESS"), t.Literal("CLOSED")],

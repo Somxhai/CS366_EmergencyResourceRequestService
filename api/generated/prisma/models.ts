@@ -11,4 +11,5 @@
 export type * from './models/ResourceRequest.js'
 export type * from './models/RequestedItem.js'
 export type * from './models/RequestedExtraItem.js'
+export type * from './models/AssignTeam.js'
 export type * from './commonInputTypes.js'

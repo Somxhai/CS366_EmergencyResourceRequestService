@@ -56,3 +56,8 @@ export type RequestedItem = Prisma.RequestedItemModel
  * 
  */
 export type RequestedExtraItem = Prisma.RequestedExtraItemModel
+/**
+ * Model AssignTeam
+ * 
+ */
+export type AssignTeam = Prisma.AssignTeamModel

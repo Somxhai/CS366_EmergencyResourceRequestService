@@ -16,3 +16,12 @@ export const ResourceRequestStatus = {
 } as const
 
 export type ResourceRequestStatus = (typeof ResourceRequestStatus)[keyof typeof ResourceRequestStatus]
+
+
+export const ResourcePriority = {
+  LOW: 'LOW',
+  NORMAL: 'NORMAL',
+  CRITICAL: 'CRITICAL'
+} as const
+
+export type ResourcePriority = (typeof ResourcePriority)[keyof typeof ResourcePriority]

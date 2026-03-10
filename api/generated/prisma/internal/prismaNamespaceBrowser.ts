@@ -53,7 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   ResourceRequest: 'ResourceRequest',
   RequestedItem: 'RequestedItem',
-  RequestedExtraItem: 'RequestedExtraItem'
+  RequestedExtraItem: 'RequestedExtraItem',
+  AssignTeam: 'AssignTeam'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -108,6 +109,16 @@ export const RequestedExtraItemScalarFieldEnum = {
 } as const
 
 export type RequestedExtraItemScalarFieldEnum = (typeof RequestedExtraItemScalarFieldEnum)[keyof typeof RequestedExtraItemScalarFieldEnum]
+
+
+export const AssignTeamScalarFieldEnum = {
+  id: 'id',
+  requestId: 'requestId',
+  teamId: 'teamId',
+  assignedAt: 'assignedAt'
+} as const
+
+export type AssignTeamScalarFieldEnum = (typeof AssignTeamScalarFieldEnum)[keyof typeof AssignTeamScalarFieldEnum]
 
 
 export const SortOrder = {

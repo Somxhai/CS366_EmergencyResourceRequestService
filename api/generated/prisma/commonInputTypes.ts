@@ -29,6 +29,13 @@ export type StringFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringFilter<$PrismaModel> | string
 }
 
+export type EnumResourcePriorityFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResourcePriority | Prisma.EnumResourcePriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.ResourcePriority[] | Prisma.ListEnumResourcePriorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ResourcePriority[] | Prisma.ListEnumResourcePriorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumResourcePriorityFilter<$PrismaModel> | $Enums.ResourcePriority
+}
+
 export type EnumResourceRequestStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.ResourceRequestStatus | Prisma.EnumResourceRequestStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ResourceRequestStatus[] | Prisma.ListEnumResourceRequestStatusFieldRefInput<$PrismaModel>
@@ -94,6 +101,16 @@ export type StringWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedStringFilter<$PrismaModel>
   _max?: Prisma.NestedStringFilter<$PrismaModel>
+}
+
+export type EnumResourcePriorityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResourcePriority | Prisma.EnumResourcePriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.ResourcePriority[] | Prisma.ListEnumResourcePriorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ResourcePriority[] | Prisma.ListEnumResourcePriorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumResourcePriorityWithAggregatesFilter<$PrismaModel> | $Enums.ResourcePriority
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumResourcePriorityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumResourcePriorityFilter<$PrismaModel>
 }
 
 export type EnumResourceRequestStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -195,6 +212,13 @@ export type NestedStringFilter<$PrismaModel = never> = {
   not?: Prisma.NestedStringFilter<$PrismaModel> | string
 }
 
+export type NestedEnumResourcePriorityFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResourcePriority | Prisma.EnumResourcePriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.ResourcePriority[] | Prisma.ListEnumResourcePriorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ResourcePriority[] | Prisma.ListEnumResourcePriorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumResourcePriorityFilter<$PrismaModel> | $Enums.ResourcePriority
+}
+
 export type NestedEnumResourceRequestStatusFilter<$PrismaModel = never> = {
   equals?: $Enums.ResourceRequestStatus | Prisma.EnumResourceRequestStatusFieldRefInput<$PrismaModel>
   in?: $Enums.ResourceRequestStatus[] | Prisma.ListEnumResourceRequestStatusFieldRefInput<$PrismaModel>
@@ -264,6 +288,16 @@ export type NestedIntFilter<$PrismaModel = never> = {
   gt?: number | Prisma.IntFieldRefInput<$PrismaModel>
   gte?: number | Prisma.IntFieldRefInput<$PrismaModel>
   not?: Prisma.NestedIntFilter<$PrismaModel> | number
+}
+
+export type NestedEnumResourcePriorityWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ResourcePriority | Prisma.EnumResourcePriorityFieldRefInput<$PrismaModel>
+  in?: $Enums.ResourcePriority[] | Prisma.ListEnumResourcePriorityFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ResourcePriority[] | Prisma.ListEnumResourcePriorityFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumResourcePriorityWithAggregatesFilter<$PrismaModel> | $Enums.ResourcePriority
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumResourcePriorityFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumResourcePriorityFilter<$PrismaModel>
 }
 
 export type NestedEnumResourceRequestStatusWithAggregatesFilter<$PrismaModel = never> = {

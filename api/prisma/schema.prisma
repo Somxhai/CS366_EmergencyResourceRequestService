@@ -13,12 +13,12 @@ datasource db {
   provider = "postgresql"
 }
 
-generator prismabox { 
-  provider = "prismabox"
+generator prismabox {
+  provider                    = "prismabox"
   typeboxImportDependencyName = "elysia"
-  typeboxImportVariableName = "t"
-  inputModel = true
-  output   = "../generated/prismabox"
+  typeboxImportVariableName   = "t"
+  inputModel                  = true
+  output                      = "../generated/prismabox"
 }
 
 enum ResourceRequestStatus {
@@ -27,25 +27,32 @@ enum ResourceRequestStatus {
   CLOSED
 }
 
-model ResourceRequest {
-  id           String   @id @default(uuid())
-  incidentId   String
-  priority     String
-  requestFor   String
-  status       ResourceRequestStatus   @default(NEW)
+enum ResourcePriority {
+  LOW
+ NORMAL 
+  CRITICAL
+}
 
-  requestedAt  DateTime @default(now())
+model ResourceRequest {
+  id         String                @id @default(uuid())
+  incidentId String
+priority   ResourcePriority @default(NORMAL)
+  requestFor String
+  status     ResourceRequestStatus @default(NEW)
+
+  requestedAt DateTime @default(now())
 
   requesterName String
   phone         String
 
-  address       String
-  description   String?
-  latitude      Float
-  longitude     Float
+  address     String
+  description String?
+  latitude    Float
+  longitude   Float
 
-  items        RequestedItem[]
-  extraItems   RequestedExtraItem[]
+  items       RequestedItem[]
+  extraItems  RequestedExtraItem[]
+  assignTeams AssignTeam[]
 }
 
 model RequestedItem {
@@ -54,7 +61,7 @@ model RequestedItem {
   itemId    String
   amount    Int
 
-  request   ResourceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  request ResourceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
 
   @@index([requestId])
 }
@@ -65,7 +72,19 @@ model RequestedExtraItem {
   name      String
   amount    Int
 
-  request   ResourceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  request ResourceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId])
+}
+
+model AssignTeam {
+  id        String @id @default(uuid())
+  requestId String
+  teamId    String
+
+  assignedAt DateTime @default(now())
+
+  request ResourceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
 
   @@index([requestId])
 }
