@@ -6,14 +6,14 @@ import { status } from "elysia";
 
 export abstract class Resource {
 	static async createRequest({
-		incidentId, items, extraItems, from, idempotencyKey, requestFor, description
+		incidentId, items, extraItems, from, requestFor, description
 	}: ResourceModel['createRequestBody']
 	) {
 		let resource = await prisma.resourceRequest.create({
 			data: {
 				id: randomUUIDv7(),
 				incidentId: incidentId,
-				priority: "NEUTRAL",
+				priority: "NORMAL",
 				requestFor: requestFor,
 				requesterName: from.name,
 				phone: from.contact.phone,
@@ -50,16 +50,6 @@ export abstract class Resource {
 
 	static async listRequests({ incident_id, status: requestStatus, priority }: ResourceModel['listRequestsQuery']) {
 
-		const incidentExists = true
-		if (!incidentExists) {
-			throw status(
-				404,
-				{
-					code: 'VALIDATION_ERROR',
-					message: `Incident ${incident_id} not found`
-				} satisfies ResourceModel['validationError']
-			)
-		}
 
 		const requests = await prisma.resourceRequest.findMany({
 			where: {
@@ -99,5 +89,111 @@ export abstract class Resource {
 				}
 			}
 		})) satisfies ResourceModel['listRequestsResponse200']
+	}
+
+	static async assign_to({ requestId, teamId }: ResourceModel['createAssignTeam']) {
+
+		const result = await prisma.$transaction(async (tx) => {
+
+			const request = await tx.resourceRequest.update({
+				where: { id: requestId },
+				data: { status: "IN_PROGRESS" }
+			})
+
+			const assign = await tx.assignTeam.create({
+				data: {
+					requestId,
+					teamId
+				}
+			})
+
+			return { request, assign }
+		})
+
+		return {
+			request_id: result.request.id,
+			team_id: result.assign.teamId,
+			status: result.request.status,
+			assigned_at: result.assign.assignedAt,
+		} satisfies ResourceModel['createAssignTeamResponse201']
+
+	}
+
+	static async getRequestById(requestId: string) {
+
+		const req = await prisma.resourceRequest.findUnique({
+			where: { id: requestId },
+			include: {
+				items: true,
+				extraItems: true
+			}
+		})
+
+		if (!req) {
+			throw status(404, {
+				code: "VALIDATION_ERROR",
+				message: `Request ${requestId} not found`
+			})
+		}
+
+		return {
+			id: req.id,
+			status: req.status,
+			priority: req.priority,
+
+			items: req.items.map((item) => ({
+				id: item.itemId,
+				amount: item.amount
+			})),
+
+			extra_items: req.extraItems.map((item) => ({
+				name: item.name,
+				amount: item.amount
+			})),
+
+			from: {
+				name: req.requesterName,
+				location: {
+					address: req.address,
+					description: req.description ?? "",
+					latitude: req.latitude,
+					longitude: req.longitude
+				},
+				contact: {
+					phone: req.phone
+				}
+			}
+		}
+	}
+	static async closeRequest(requestId: string) {
+
+		const req = await prisma.resourceRequest.update({
+			where: { id: requestId },
+			data: { status: "CLOSED" }
+		})
+
+		return {
+			request_id: req.id,
+			status: req.status
+		}
+	}
+
+	static async unassignRequest(requestId: string): Promise<ResourceModel['unassignRequestResponse200']> {
+
+		await prisma.$transaction([
+			prisma.assignTeam.deleteMany({
+				where: { requestId }
+			}),
+
+			prisma.resourceRequest.update({
+				where: { id: requestId },
+				data: { status: "NEW" }
+			})
+		])
+
+		return {
+			request_id: requestId,
+			status: "NEW"
+		}
 	}
 }
