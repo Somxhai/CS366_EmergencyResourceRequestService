@@ -8,17 +8,17 @@ on:
 
 jobs:
   migrate:
-    runs-on: ubuntu-latest
+    runs-on: ip-10-0-1-160
 
     steps:
-      - name: Run migration on EC2
-        uses: appleboy/ssh-action@v1
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd /home/ubuntu/app
-            git pull
-            bun install
-            bunx prisma migrate deploy
+          bun-version: latest
+
+      - run: bun install
+
+      - run: bunx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
