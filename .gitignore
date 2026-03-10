@@ -1,0 +1,4 @@
+*.tfvars
+.terraform
+*.env
+**/node_modules
