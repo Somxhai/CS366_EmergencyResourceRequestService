@@ -9,6 +9,11 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 
   availability_zone = var.azs[count.index]
+
+  tags = {
+    Name = "${var.name}-public-${var.azs[count.index]}"
+    Type = "public"
+  }
 }
 
 resource "aws_subnet" "private" {
@@ -20,4 +25,10 @@ resource "aws_subnet" "private" {
   cidr_block = var.private_subnets[count.index]
 
   availability_zone = var.azs[count.index]
+
+  tags = {
+    Name = "${var.name}-private-${var.azs[count.index]}"
+    Type = "private"
+  }
+
 }
