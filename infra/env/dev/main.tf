@@ -7,8 +7,8 @@ module "network" {
   cidr = "10.0.0.0/16"
 
   azs = [
-    "us-east-1a",
-    "us-east-1b"
+    "ap-southeast-7a",
+    "ap-southeast-7b"
   ]
 
   public_subnets = [
@@ -16,17 +16,17 @@ module "network" {
     "10.0.2.0/24"
   ]
 
-  private_subnets = [
-    "10.0.11.0/24",
-    "10.0.12.0/24"
-  ]
+  # private_subnets = [
+  #   "10.0.11.0/24",
+  #   "10.0.12.0/24"
+  # ]
 }
 
-module "ecs_cluster" {
-  source = "../../modules/ecs-cluster"
-
-  name = "dev-cluster"
-}
+# module "ecs_cluster" {
+#   source = "../../modules/ecs-cluster"
+#
+#   name = "dev-cluster"
+# }
 
 module "ecr" {
   source = "../../modules/ecr"
@@ -79,7 +79,7 @@ module "rds" {
 
   vpc_id = module.network.vpc_id
 
-  subnets = module.network.private_subnets
+  subnets = module.network.public_subnets
 
   instance_class = "db.t3.micro"
 
@@ -98,7 +98,7 @@ module "redis" {
 
   vpc_id = module.network.vpc_id
 
-  subnets = module.network.private_subnets
+  subnets = module.network.public_subnets
 
   node_type = "cache.t3.micro"
 
@@ -109,12 +109,10 @@ module "pubsub" {
 
   source = "../../modules/pubsub"
 
-  topic_name = "reservation-events"
+  topic_name = "resource-request"
 
   queue_names = [
-    "email",
-    "analytics",
-    "notifications"
+    "create",
   ]
 }
 

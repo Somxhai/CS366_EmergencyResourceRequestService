@@ -29,8 +29,10 @@ resource "aws_db_subnet_group" "this" {
 }
 
 resource "aws_db_instance" "this" {
-
-  identifier = var.name
+  publicly_accessible = true
+  multi_az            = false
+  apply_immediately   = true
+  identifier          = var.name
 
   engine = "postgres"
 
@@ -42,11 +44,12 @@ resource "aws_db_instance" "this" {
   username = var.username
   password = var.password
 
+
   vpc_security_group_ids = [
     aws_security_group.db_sg.id
   ]
 
   db_subnet_group_name = aws_db_subnet_group.this.name
-
-  skip_final_snapshot = true
+  storage_type         = "gp2"
+  skip_final_snapshot  = true
 }
