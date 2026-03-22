@@ -1,156 +1,232 @@
 import { randomUUIDv7 } from "bun";
-import { prisma } from "../lib/prisma";
-import type { ResourceModel } from "./model";
+import { eq, and } from "drizzle-orm";
+import { type ResourceModel } from "./model";
 import { status } from "elysia";
-
+import { PublishCommand } from "@aws-sdk/client-sns";
+import { sns } from "../lib/sns";
+import { db } from "../lib/db";
+import { resourceRequest, assignTeam, requestedItem, requestedExtraItem } from "../db/schema";
 
 export abstract class Resource {
 	static async createRequest({
 		incidentId, items, extraItems, from, requestFor, description
-	}: ResourceModel['createRequestBody']
-	) {
-		let resource = await prisma.resourceRequest.create({
-			data: {
-				id: randomUUIDv7(),
+	}: ResourceModel['createRequestBody']) {
+		const newRequestId = randomUUIDv7();
+
+		const resource = await db.transaction(async (tx) => {
+			const [req] = await tx.insert(resourceRequest).values({
+				id: newRequestId,
 				incidentId: incidentId,
 				priority: "NORMAL",
 				requestFor: requestFor,
 				requesterName: from.name,
 				phone: from.contact.phone,
 				description,
-
 				address: from.location.address,
 				latitude: from.location.latitude,
 				longitude: from.location.longitude,
+			}).returning();
 
-				items: {
-					create: items.map((item) => ({
+			if (items && items.length > 0) {
+				await tx.insert(requestedItem).values(
+					items.map((item) => ({
+						requestId: newRequestId,
 						itemId: item.id,
 						amount: item.amount
 					}))
-				},
+				);
+			}
 
-				extraItems: {
-					create: extraItems?.map((item) => ({
+			if (extraItems && extraItems.length > 0) {
+				await tx.insert(requestedExtraItem).values(
+					extraItems.map((item) => ({
+						requestId: newRequestId,
 						name: item.name,
 						amount: item.amount
-					})) ?? []
-				}
+					}))
+				);
 			}
-		})
+
+			return req;
+		});
 
 		return {
 			id: resource.id,
 			status: resource.status ?? "NEW",
 			requested_at: resource.requestedAt
-		} satisfies ResourceModel['createRequestResponse201']
+		} satisfies ResourceModel['createRequestResponse201'];
+	}
+
+	static async createRequestAsync({
+		incidentId, items, extraItems, from, requestFor, description
+	}: ResourceModel['createRequestBody']) {
+		const body = {
+			id: randomUUIDv7(),
+			incidentId: incidentId,
+			priority: "NORMAL",
+			requestFor: requestFor,
+			requesterName: from.name,
+			phone: from.contact.phone,
+			description,
+			address: from.location.address,
+			latitude: from.location.latitude,
+			longitude: from.location.longitude,
+			items: {
+				create: items.map((item) => ({
+					itemId: item.id,
+					amount: item.amount
+				}))
+			},
+			extraItems: {
+				create: extraItems?.map((item) => ({
+					name: item.name,
+					amount: item.amount
+				})) ?? []
+			}
+		};
+
+		try {
+			await sns.send(
+				new PublishCommand({
+					TopicArn: process.env.RESOURCE_REQUEST_TOPIC,
+					Message: JSON.stringify({
+						type: "resource_request.create",
+						payload: body
+					})
+				})
+			);
+			return {
+				id: body.id,
+				status: "ACCEPT"
+			} satisfies ResourceModel['createRequestAsyncResponse'];
+
+		} catch (e) {
+			console.error(e);
+			return {
+				id: body.id,
+				status: "REJECTED"
+			} satisfies ResourceModel['createRequestAsyncResponse'];
+		}
 	}
 
 	static async broadcastCreateRequest() { }
 
 	static async listRequests({ incident_id, status: requestStatus, priority }: ResourceModel['listRequestsQuery']) {
+		const conditions = [eq(resourceRequest.incidentId, incident_id)];
 
+		if (requestStatus) {
+			conditions.push(eq(resourceRequest.status, requestStatus));
+		}
 
-		const requests = await prisma.resourceRequest.findMany({
-			where: {
-				incidentId: incident_id,
-				...(requestStatus && { status: requestStatus }),
-				...(priority && { priority })
-			},
-			include: {
-				items: true,
-				extraItems: true
-			}
-		})
+		if (priority) {
+			conditions.push(eq(resourceRequest.priority, priority));
+		}
 
-		return requests.map((req) => ({
-			id: req.id,
+		const requests = await db.select()
+			.from(resourceRequest)
+			.where(and(...conditions));
 
-			items: req.items.map((item) => ({
-				id: item.itemId,
-				amount: item.amount
-			})),
+		const results = await Promise.all(requests.map(async (req) => {
+			const items = await db.select().from(requestedItem).where(eq(requestedItem.requestId, req.id));
+			const extraItems = await db.select().from(requestedExtraItem).where(eq(requestedExtraItem.requestId, req.id));
 
-			extra_items: req.extraItems.map((item) => ({
-				name: item.name,
-				amount: item.amount
-			})),
-
-			from: {
-				name: req.requesterName,
-				location: {
-					address: req.address,
-					description: req.description ?? "",
-					latitude: req.latitude,
-					longitude: req.longitude
-				},
-				contact: {
-					phone: req.phone
+			return {
+				id: req.id,
+				items: items.map((item) => ({
+					id: item.itemId,
+					amount: item.amount
+				})),
+				extra_items: extraItems.map((item) => ({
+					name: item.name,
+					amount: item.amount
+				})),
+				from: {
+					name: req.requesterName,
+					location: {
+						address: req.address,
+						description: req.description ?? "",
+						latitude: req.latitude,
+						longitude: req.longitude
+					},
+					contact: {
+						phone: req.phone
+					}
 				}
-			}
-		})) satisfies ResourceModel['listRequestsResponse200']
+			};
+		}));
+
+		return results satisfies ResourceModel['listRequestsResponse200'];
 	}
 
 	static async assign_to({ requestId, teamId }: ResourceModel['createAssignTeam']) {
+		const result = await db.transaction(async (tx) => {
+			const [currentRequest] = await tx.select()
+				.from(resourceRequest)
+				.where(eq(resourceRequest.id, requestId))
+				.limit(1);
 
-		const result = await prisma.$transaction(async (tx) => {
+			if (!currentRequest) {
+				throw status(404, {
+					code: "VALIDATION_ERROR",
+					message: `Request ${requestId} not found`
+				});
+			}
 
-			const request = await tx.resourceRequest.update({
-				where: { id: requestId },
-				data: { status: "IN_PROGRESS" }
-			})
+			if (currentRequest.status === "CLOSED") {
+				throw status(400, {
+					code: "VALIDATION_ERROR",
+					message: "Cannot assign team: request is already CLOSED"
+				});
+			}
 
-			const assign = await tx.assignTeam.create({
-				data: {
-					requestId,
-					teamId
-				}
-			})
+			const [request] = await tx.update(resourceRequest)
+				.set({ status: "IN_PROGRESS" })
+				.where(eq(resourceRequest.id, requestId))
+				.returning();
 
-			return { request, assign }
-		})
+			const [assign] = await tx.insert(assignTeam)
+				.values({ requestId, teamId })
+				.returning();
+
+			return { request, assign };
+		});
 
 		return {
 			request_id: result.request.id,
 			team_id: result.assign.teamId,
 			status: result.request.status,
 			assigned_at: result.assign.assignedAt,
-		} satisfies ResourceModel['createAssignTeamResponse201']
-
+		} satisfies ResourceModel['createAssignTeamResponse201'];
 	}
 
 	static async getRequestById(requestId: string) {
-
-		const req = await prisma.resourceRequest.findUnique({
-			where: { id: requestId },
-			include: {
-				items: true,
-				extraItems: true
-			}
-		})
+		const [req] = await db.select()
+			.from(resourceRequest)
+			.where(eq(resourceRequest.id, requestId))
+			.limit(1);
 
 		if (!req) {
 			throw status(404, {
 				code: "VALIDATION_ERROR",
 				message: `Request ${requestId} not found`
-			})
+			});
 		}
+
+		const items = await db.select().from(requestedItem).where(eq(requestedItem.requestId, req.id));
+		const extraItems = await db.select().from(requestedExtraItem).where(eq(requestedExtraItem.requestId, req.id));
 
 		return {
 			id: req.id,
 			status: req.status,
 			priority: req.priority,
-
-			items: req.items.map((item) => ({
+			items: items.map((item) => ({
 				id: item.itemId,
 				amount: item.amount
 			})),
-
-			extra_items: req.extraItems.map((item) => ({
+			extra_items: extraItems.map((item) => ({
 				name: item.name,
 				amount: item.amount
 			})),
-
 			from: {
 				name: req.requesterName,
 				location: {
@@ -163,37 +239,33 @@ export abstract class Resource {
 					phone: req.phone
 				}
 			}
-		}
+		};
 	}
-	static async closeRequest(requestId: string) {
 
-		const req = await prisma.resourceRequest.update({
-			where: { id: requestId },
-			data: { status: "CLOSED" }
-		})
+	static async closeRequest(requestId: string) {
+		const [req] = await db.update(resourceRequest)
+			.set({ status: "CLOSED" })
+			.where(eq(resourceRequest.id, requestId))
+			.returning();
 
 		return {
 			request_id: req.id,
 			status: req.status
-		}
+		};
 	}
 
 	static async unassignRequest(requestId: string): Promise<ResourceModel['unassignRequestResponse200']> {
+		await db.transaction(async (tx) => {
+			await tx.delete(assignTeam).where(eq(assignTeam.requestId, requestId));
 
-		await prisma.$transaction([
-			prisma.assignTeam.deleteMany({
-				where: { requestId }
-			}),
-
-			prisma.resourceRequest.update({
-				where: { id: requestId },
-				data: { status: "NEW" }
-			})
-		])
+			await tx.update(resourceRequest)
+				.set({ status: "NEW" })
+				.where(eq(resourceRequest.id, requestId));
+		});
 
 		return {
 			request_id: requestId,
 			status: "NEW"
-		}
+		};
 	}
 }
