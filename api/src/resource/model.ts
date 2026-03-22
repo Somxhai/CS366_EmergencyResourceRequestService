@@ -74,7 +74,7 @@ export const ResourceModel = {
 	}),
 
 	listRequestsHeaders: t.Object({
-		authorization: t.String()
+		// authorization: t.String()
 	}),
 
 	listRequestsQuery: t.Object({
