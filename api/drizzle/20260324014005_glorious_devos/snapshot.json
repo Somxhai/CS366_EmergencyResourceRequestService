@@ -1,10 +1,10 @@
 {
+  "version": "8",
   "dialect": "postgres",
-  "id": "6bc473f8-f598-4783-b986-a846c98510a3",
+  "id": "8b82a8bf-2f98-45b4-9d87-88578e4cfccc",
   "prevIds": [
     "00000000-0000-0000-0000-000000000000"
   ],
-  "version": "8",
   "ddl": [
     {
       "values": [
@@ -61,17 +61,43 @@
       "name": "id",
       "entityType": "columns",
       "schema": "public",
-      "table": "resource_request"
+      "table": "assign_team"
     },
     {
       "type": "uuid",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
-      "default": "gen_random_uuid()",
+      "default": null,
       "generated": null,
       "identity": null,
-      "name": "id",
+      "name": "request_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "assign_team"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "team_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "assign_team"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "assigned_at",
       "entityType": "columns",
       "schema": "public",
       "table": "assign_team"
@@ -87,7 +113,46 @@
       "name": "id",
       "entityType": "columns",
       "schema": "public",
-      "table": "requested_item"
+      "table": "requested_extra_item"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "request_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "requested_extra_item"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "requested_extra_item"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "amount",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "requested_extra_item"
     },
     {
       "type": "uuid",
@@ -100,7 +165,7 @@
       "name": "id",
       "entityType": "columns",
       "schema": "public",
-      "table": "requested_extra_item"
+      "table": "requested_item"
     },
     {
       "type": "uuid",
@@ -123,36 +188,49 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "incident_id",
+      "name": "item_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "requested_item"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "amount",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "requested_item"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "gen_random_uuid()",
+      "generated": null,
+      "identity": null,
+      "name": "id",
       "entityType": "columns",
       "schema": "public",
       "table": "resource_request"
     },
     {
-      "type": "uuid",
+      "type": "text",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "request_id",
+      "name": "incident_id",
       "entityType": "columns",
       "schema": "public",
-      "table": "requested_extra_item"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "request_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "assign_team"
+      "table": "resource_request"
     },
     {
       "type": "resource_priority",
@@ -175,88 +253,10 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "team_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "assign_team"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "name",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "requested_extra_item"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "item_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "requested_item"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
       "name": "request_for",
       "entityType": "columns",
       "schema": "public",
       "table": "resource_request"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "amount",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "requested_extra_item"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "assigned_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "assign_team"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "amount",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "requested_item"
     },
     {
       "type": "resource_request_status",
@@ -366,11 +366,11 @@
       "nameExplicit": true,
       "columns": [
         {
+          "value": "request_id",
+          "isExpression": false,
           "asc": true,
           "nullsFirst": false,
-          "opclass": null,
-          "isExpression": false,
-          "value": "request_id"
+          "opclass": null
         }
       ],
       "isUnique": false,
@@ -387,11 +387,11 @@
       "nameExplicit": true,
       "columns": [
         {
+          "value": "request_id",
+          "isExpression": false,
           "asc": true,
           "nullsFirst": false,
-          "opclass": null,
-          "isExpression": false,
-          "value": "request_id"
+          "opclass": null
         }
       ],
       "isUnique": false,
@@ -408,11 +408,11 @@
       "nameExplicit": true,
       "columns": [
         {
+          "value": "request_id",
+          "isExpression": false,
           "asc": true,
           "nullsFirst": false,
-          "opclass": null,
-          "isExpression": false,
-          "value": "request_id"
+          "opclass": null
         }
       ],
       "isUnique": false,
@@ -426,7 +426,7 @@
       "table": "requested_item"
     },
     {
-      "nameExplicit": true,
+      "nameExplicit": false,
       "columns": [
         "request_id"
       ],
@@ -437,13 +437,13 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
-      "name": "assign_team_request_id_resource_request_id_fk",
+      "name": "assign_team_request_id_resource_request_id_fkey",
       "entityType": "fks",
       "schema": "public",
       "table": "assign_team"
     },
     {
-      "nameExplicit": true,
+      "nameExplicit": false,
       "columns": [
         "request_id"
       ],
@@ -454,13 +454,13 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
-      "name": "requested_extra_item_request_id_resource_request_id_fk",
+      "name": "requested_extra_item_request_id_resource_request_id_fkey",
       "entityType": "fks",
       "schema": "public",
       "table": "requested_extra_item"
     },
     {
-      "nameExplicit": true,
+      "nameExplicit": false,
       "columns": [
         "request_id"
       ],
@@ -471,7 +471,7 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
-      "name": "requested_item_request_id_resource_request_id_fk",
+      "name": "requested_item_request_id_resource_request_id_fkey",
       "entityType": "fks",
       "schema": "public",
       "table": "requested_item"
@@ -480,41 +480,41 @@
       "columns": [
         "id"
       ],
-      "nameExplicit": true,
+      "nameExplicit": false,
       "name": "assign_team_pkey",
-      "entityType": "pks",
       "schema": "public",
-      "table": "assign_team"
+      "table": "assign_team",
+      "entityType": "pks"
     },
     {
       "columns": [
         "id"
       ],
-      "nameExplicit": true,
+      "nameExplicit": false,
       "name": "requested_extra_item_pkey",
-      "entityType": "pks",
       "schema": "public",
-      "table": "requested_extra_item"
+      "table": "requested_extra_item",
+      "entityType": "pks"
     },
     {
       "columns": [
         "id"
       ],
-      "nameExplicit": true,
+      "nameExplicit": false,
       "name": "requested_item_pkey",
-      "entityType": "pks",
       "schema": "public",
-      "table": "requested_item"
+      "table": "requested_item",
+      "entityType": "pks"
     },
     {
       "columns": [
         "id"
       ],
-      "nameExplicit": true,
+      "nameExplicit": false,
       "name": "resource_request_pkey",
-      "entityType": "pks",
       "schema": "public",
-      "table": "resource_request"
+      "table": "resource_request",
+      "entityType": "pks"
     }
   ],
   "renames": []

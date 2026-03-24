@@ -1,0 +1,1 @@
+ALTER TABLE "resource_request" ALTER COLUMN "incident_id" SET DATA TYPE uuid USING "incident_id"::uuid;
