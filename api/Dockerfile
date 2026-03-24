@@ -14,6 +14,11 @@ RUN bun install
 # Copy project files
 COPY ./src ./src
 COPY ./tsconfig.json .
+# Copy ORM config
+COPY ./drizzle.config.ts .
+
+# Copy Cert
+COPY ./cert ./cert
 
 # Set app to production
 ENV NODE_ENV=production
@@ -32,7 +37,8 @@ WORKDIR /app
 
 # Copy files from first stage
 COPY --from=build /app/server server
-
+# Copy the cert folder from the first stage
+COPY --from=build /app/cert ./cert
 # Set app to production
 ENV NODE_ENV=production
 
