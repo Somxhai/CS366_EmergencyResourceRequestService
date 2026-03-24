@@ -10,7 +10,7 @@
 		"@elysiajs/openapi": "^1.4.14",
 		"@valkey/valkey-glide": "^2.3.0",
 		"dotenv": "^17.3.1",
-		"drizzle-orm": "^1.0.0-beta.18-7eb39f0",
+		"drizzle-orm": "^0.45.1",
 		"drizzle-typebox": "^0.3.3",
 		"elysia": "latest",
 		"pg": "^8.20.0"
@@ -18,11 +18,11 @@
 	"devDependencies": {
 		"@types/bun": "^1.3.10",
 		"@types/pg": "^8.20.0",
-		"drizzle-kit": "^1.0.0-beta.18-7eb39f0",
+		"drizzle-kit": "^1.0.0-beta.19",
 		"tsx": "^4.21.0"
 	},
 	"overrides": {
-		"@sinclair/typebox": "0.34.0"
+		"@sinclair/typebox": "0.34.48"
 	},
 	"module": "src/index.js",
 	"patchedDependencies": {
