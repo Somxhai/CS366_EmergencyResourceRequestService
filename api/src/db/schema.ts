@@ -7,7 +7,7 @@ export const resourceRequestStatus = pgEnum("resource_request_status", ["NEW", "
 
 export const assignTeam = pgTable("assign_team", {
 	id: uuid().defaultRandom().primaryKey(),
-	requestId: uuid("request_id").notNull().references(() => resourceRequest.id, { onDelete: "cascade" } ),
+	requestId: uuid("request_id").notNull().references(() => resourceRequest.id, { onDelete: "cascade" }),
 	teamId: text("team_id").notNull(),
 	assignedAt: timestamp("assigned_at", { withTimezone: true }).default(sql`now()`).notNull(),
 }, (table) => [
@@ -16,7 +16,7 @@ export const assignTeam = pgTable("assign_team", {
 
 export const requestedExtraItem = pgTable("requested_extra_item", {
 	id: uuid().defaultRandom().primaryKey(),
-	requestId: uuid("request_id").notNull().references(() => resourceRequest.id, { onDelete: "cascade" } ),
+	requestId: uuid("request_id").notNull().references(() => resourceRequest.id, { onDelete: "cascade" }),
 	name: text().notNull(),
 	amount: integer().notNull(),
 }, (table) => [
@@ -25,7 +25,7 @@ export const requestedExtraItem = pgTable("requested_extra_item", {
 
 export const requestedItem = pgTable("requested_item", {
 	id: uuid().defaultRandom().primaryKey(),
-	requestId: uuid("request_id").notNull().references(() => resourceRequest.id, { onDelete: "cascade" } ),
+	requestId: uuid("request_id").notNull().references(() => resourceRequest.id, { onDelete: "cascade" }),
 	itemId: text("item_id").notNull(),
 	amount: integer().notNull(),
 }, (table) => [
@@ -34,7 +34,7 @@ export const requestedItem = pgTable("requested_item", {
 
 export const resourceRequest = pgTable("resource_request", {
 	id: uuid().defaultRandom().primaryKey(),
-	incidentId: text("incident_id").notNull(),
+	incidentId: uuid("incident_id").notNull(),
 	priority: resourcePriority().default("NORMAL").notNull(),
 	requestFor: text("request_for").notNull(),
 	status: resourceRequestStatus().default("NEW").notNull(),
