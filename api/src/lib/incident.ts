@@ -10,6 +10,7 @@ export const getIncident = async (incident_id: string): Promise<Incident | null>
 				method: "GET",
 				headers: {
 					"X-IncidentTNX-Id": crypto.randomUUID(),
+					"api-key": "123",
 					"Content-Type": "application/json"
 				},
 				signal: AbortSignal.timeout(5000)
