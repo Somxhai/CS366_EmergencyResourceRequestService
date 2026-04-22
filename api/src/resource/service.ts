@@ -6,6 +6,7 @@ import { PublishCommand } from "@aws-sdk/client-sns";
 import { sns } from "../lib/sns";
 import { db } from "../lib/db";
 import { resourceRequest, assignTeam, requestedItem, requestedExtraItem } from "../db/schema";
+import { getIncident } from "../lib/incident";
 
 export abstract class Resource {
 	static async createRequest({
@@ -60,6 +61,8 @@ export abstract class Resource {
 	static async createRequestAsync({
 		incidentId, items, extraItems, from, requestFor, description
 	}: ResourceModel['createRequestBody']) {
+
+		const incident = await getIncident(incidentId);
 		const body = {
 			id: randomUUIDv7(),
 			incidentId: incidentId,
@@ -82,7 +85,8 @@ export abstract class Resource {
 					name: item.name,
 					amount: item.amount
 				})) ?? []
-			}
+			},
+			verified: incident !== null,
 		};
 
 		try {
@@ -95,6 +99,7 @@ export abstract class Resource {
 					})
 				})
 			);
+			console.log(`Send message to SNS Topic ${body.id}`)
 			return {
 				id: body.id,
 				status: "ACCEPT"
