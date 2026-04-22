@@ -1,4 +1,4 @@
-import { pgEnum, pgTable, uuid, text, integer, timestamp, doublePrecision, index, foreignKey, primaryKey } from "drizzle-orm/pg-core"
+import { pgEnum, pgTable, uuid, text, integer, timestamp, doublePrecision, index, foreignKey, primaryKey, boolean } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const resourcePriority = pgEnum("resource_priority", ["LOW", "NORMAL", "CRITICAL"])
@@ -45,4 +45,5 @@ export const resourceRequest = pgTable("resource_request", {
 	description: text(),
 	latitude: doublePrecision().notNull(),
 	longitude: doublePrecision().notNull(),
+	verified: boolean("verified").default(false).notNull()
 });
