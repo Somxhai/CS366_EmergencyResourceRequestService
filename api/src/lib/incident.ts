@@ -17,6 +17,8 @@ export const getIncident = async (incident_id: string): Promise<Incident | null>
 			}
 		);
 
+		console.log("incident_json: ", await response.text())
+
 		if (response.status === 404) {
 			return null;
 		}

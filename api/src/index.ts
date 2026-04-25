@@ -1,8 +1,25 @@
 import { Elysia } from "elysia";
 import { resource } from "./resource";
 import { openapi } from '@elysiajs/openapi'
+import { logger } from "@bogeychan/elysia-logger";
 
-const app = new Elysia().use(openapi()).get("/health", () => "Hello, it's working").use(resource).listen({
+const app = new Elysia().use(openapi()).use(logger()).get("/health", () => "Hello, it's working").get("/public-outbound", async () => {
+	try {
+		const res = await fetch("https://api.ipify.org?format=json");
+		const data = await res.json();
+		return {
+			success: true,
+			data
+		};
+	} catch (err) {
+		if (err instanceof Error)
+			return {
+				success: false,
+				error: err.message
+			};
+	}
+
+}).use(resource).listen({
 	port: process.env.PORT || 3000,
 	hostname: "0.0.0.0"
 });

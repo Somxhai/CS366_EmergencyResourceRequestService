@@ -5,7 +5,7 @@ import { status } from "elysia";
 import { PublishCommand } from "@aws-sdk/client-sns";
 import { sns } from "../lib/sns";
 import { db } from "../lib/db";
-import { resourceRequest, assignTeam, requestedItem, requestedExtraItem } from "../db/schema";
+import { resourceRequest, assignTeam, requestedItem, requestedExtraItem, resourcePriority } from "../db/schema";
 import { getIncident } from "../lib/incident";
 
 export abstract class Resource {
@@ -63,10 +63,14 @@ export abstract class Resource {
 	}: ResourceModel['createRequestBody']) {
 
 		const incident = await getIncident(incidentId);
+		console.log("incident_id: ", incident?.incident_id)
+
+		// Get priority later
+
 		const body = {
 			id: randomUUIDv7(),
 			incidentId: incidentId,
-			priority: "NORMAL",
+			priority: 'UNDECIDED',
 			requestFor: requestFor,
 			requesterName: from.name,
 			phone: from.contact.phone,
