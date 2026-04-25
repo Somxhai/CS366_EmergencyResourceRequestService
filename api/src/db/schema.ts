@@ -1,7 +1,7 @@
 import { pgEnum, pgTable, uuid, text, integer, timestamp, doublePrecision, index, foreignKey, primaryKey, boolean } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
-export const resourcePriority = pgEnum("resource_priority", ["LOW", "NORMAL", "CRITICAL"])
+export const resourcePriority = pgEnum("resource_priority", ["UNDECIDED", "LOW", "NORMAL", "HIGH", "CRITICAL"])
 export const resourceRequestStatus = pgEnum("resource_request_status", ["NEW", "IN_PROGRESS", "CLOSED"])
 
 

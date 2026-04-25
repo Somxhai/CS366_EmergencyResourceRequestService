@@ -1,0 +1,1 @@
+ALTER TYPE "public"."resource_priority" ADD VALUE 'UNDECIDED' BEFORE 'LOW';
