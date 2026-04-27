@@ -3,86 +3,74 @@ import { ItemModel } from '../item/model'
 import { createSelectSchema, createInsertSchema } from 'drizzle-typebox'
 import { resourceRequest } from '../db/schema'
 
-// 1. Generate base schemas, overriding specific fields with Elysia validations
 const selectResourceSchema = createSelectSchema(resourceRequest, {
-	id: t.String({ format: 'uuid' }),
-	incidentId: t.String({ format: 'uuid' })
+	id: t.String({ format: 'uuid', error: 'id must be a valid UUID' }),
+	incidentId: t.String({ format: 'uuid', error: 'incidentId must be a valid UUID' })
 })
-
 const insertResourceSchema = createInsertSchema(resourceRequest, {
-	incidentId: t.String({ format: 'uuid' })
+	incidentId: t.String({ format: 'uuid', error: 'incidentId must be a valid UUID' })
 })
 
-// 2. Extract exact enums and fields straight from the Drizzle schemas
 export const ResourceRequestStatus = t.Union([
 	t.Literal('NEW'),
 	t.Literal('IN_PROGRESS'),
 	t.Literal('CLOSED')
-])
+], { error: 'status must be one of: NEW, IN_PROGRESS, CLOSED' })
+
 export const ResourcePriority = t.Union([
 	t.Literal('LOW'),
 	t.Literal('NORMAL'),
 	t.Literal('CRITICAL')
-])
+], { error: 'priority must be one of: LOW, NORMAL, CRITICAL' })
 
 export const AsyncStatus = t.Union([
 	t.Literal('ACCEPT'),
 	t.Literal('REJECTED')
-])
+], { error: 'async status must be one of: ACCEPT, REJECTED' })
 
 export const ResourceModel = {
 	createRequestBody: t.Object({
-		// Mapped directly to DB schema while maintaining the nested API structure
 		incidentId: insertResourceSchema.properties.incidentId,
 		description: t.Optional(insertResourceSchema.properties.description),
 		requestFor: insertResourceSchema.properties.requestFor,
-
-		items: t.Array(ItemModel.body),
-		extraItems: t.Optional(t.Array(ItemModel.extra_item)),
-
+		items: t.Array(ItemModel.body, { error: 'items must be an array' }),
+		extraItems: t.Optional(t.Array(ItemModel.extra_item, { error: 'extraItems must be an array' })),
 		from: t.Object({
 			name: insertResourceSchema.properties.requesterName,
 			location: t.Object({
 				address: insertResourceSchema.properties.address,
-				description: t.String(),
+				description: t.String({ error: 'location.description must be a string' }),
 				latitude: insertResourceSchema.properties.latitude,
 				longitude: insertResourceSchema.properties.longitude
 			}),
 			contact: t.Object({
-				phone: insertResourceSchema.properties.phone
+				phone: t.String({ minLength: 10, maxLength: 10, error: 'phone must be exactly 10 characters' })
 			})
 		}),
 	}),
-
 	createRequestHeaders: t.Object({
-		'idempotency-key': t.String({ format: 'uuid' }),
+		'idempotency-key': t.String({ format: 'uuid', error: 'idempotency-key header must be a valid UUID' }),
 	}),
-
 	createRequestResponse201: t.Object({
 		id: selectResourceSchema.properties.id,
 		status: ResourceRequestStatus,
 		requested_at: selectResourceSchema.properties.requestedAt
 	}),
-
 	createRequestAsyncResponse: t.Object({
 		id: selectResourceSchema.properties.id,
 		status: AsyncStatus
 	}),
-
 	error: t.Object({
 		message: t.String()
 	}),
-
 	listRequestsHeaders: t.Object({
 		// authorization: t.String()
 	}),
-
 	listRequestsQuery: t.Object({
 		incident_id: selectResourceSchema.properties.incidentId,
 		status: t.Optional(ResourceRequestStatus),
 		priority: t.Optional(ResourcePriority)
 	}),
-
 	listRequestsResponse200: t.Array(t.Object({
 		id: selectResourceSchema.properties.id,
 		items: t.Array(ItemModel.body),
@@ -91,52 +79,46 @@ export const ResourceModel = {
 			name: selectResourceSchema.properties.requesterName,
 			location: t.Object({
 				address: selectResourceSchema.properties.address,
-				description: t.String(),
+				description: t.String({ error: 'location.description must be a string' }),
 				latitude: selectResourceSchema.properties.latitude,
 				longitude: selectResourceSchema.properties.longitude
 			}),
 			contact: t.Object({
-				phone: selectResourceSchema.properties.phone
+				phone: t.String({ minLength: 10, maxLength: 10, error: 'phone must be exactly 10 characters' })
 			})
 		}),
 	})),
-
 	createAssignTeam: t.Object({
 		requestId: selectResourceSchema.properties.id,
-		teamId: t.String()
+		teamId: t.String({ error: 'teamId must be a string' })
 	}),
-
 	createAssignTeamResponse201: t.Object({
 		request_id: selectResourceSchema.properties.id,
-		team_id: t.String(),
+		team_id: t.String({ error: 'team_id must be a string' }),
 		status: ResourceRequestStatus,
 		assigned_at: selectResourceSchema.properties.requestedAt
 	}),
-
 	assignParams: t.Object({
 		request_id: selectResourceSchema.properties.id
 	}),
-
 	getRequestParams: t.Object({
 		request_id: selectResourceSchema.properties.id
 	}),
-
 	createAssignTeamBody: t.Object({
-		team_id: t.String()
+		team_id: t.String({ error: 'team_id must be a string' })
 	}),
-
 	getRequestResponse200: t.Object({
 		id: selectResourceSchema.properties.id,
 		items: t.Array(
 			t.Object({
-				id: t.String(),
-				amount: t.Number()
+				id: t.String({ format: 'uuid', error: 'item.id must be a valid UUID' }),
+				amount: t.Number({ error: 'item.amount must be a number' })
 			})
 		),
 		extra_items: t.Array(
 			t.Object({
-				name: t.String(),
-				amount: t.Number()
+				name: t.String({ error: 'extra_item.name must be a string' }),
+				amount: t.Number({ error: 'extra_item.amount must be a number' })
 			})
 		),
 		status: ResourceRequestStatus,
@@ -145,34 +127,29 @@ export const ResourceModel = {
 			name: selectResourceSchema.properties.requesterName,
 			location: t.Object({
 				address: selectResourceSchema.properties.address,
-				description: t.String(),
+				description: t.String({ error: 'location.description must be a string' }),
 				latitude: selectResourceSchema.properties.latitude,
 				longitude: selectResourceSchema.properties.longitude
 			}),
 			contact: t.Object({
-				phone: selectResourceSchema.properties.phone
+				phone: t.String({ minLength: 10, maxLength: 10, error: 'phone must be exactly 10 characters' })
 			})
 		})
 	}),
-
 	finishRequestParams: t.Object({
 		request_id: selectResourceSchema.properties.id
 	}),
-
 	finishRequestResponse200: t.Object({
 		request_id: selectResourceSchema.properties.id,
 		status: ResourceRequestStatus
 	}),
-
 	unassignRequestParams: t.Object({
 		request_id: selectResourceSchema.properties.id
 	}),
-
 	unassignRequestResponse200: t.Object({
 		request_id: selectResourceSchema.properties.id,
 		status: ResourceRequestStatus
 	}),
-
 } as const
 
 export type ResourceModel = {

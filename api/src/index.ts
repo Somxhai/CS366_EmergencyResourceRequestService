@@ -19,6 +19,14 @@ const app = new Elysia().use(openapi()).use(logger()).get("/health", () => "Hell
 			};
 	}
 
+}).onError(({ code, error, set }) => {
+	if (code === 'VALIDATION') {
+		set.status = 400
+		return {
+			message: error.message,
+			fields: error.all
+		}
+	}
 }).use(resource).listen({
 	port: process.env.PORT || 3000,
 	hostname: "0.0.0.0"
