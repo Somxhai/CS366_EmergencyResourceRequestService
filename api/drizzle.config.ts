@@ -1,6 +1,5 @@
 import 'dotenv/config'; // make sure to install dotenv package
 import { defineConfig } from 'drizzle-kit';
-import fs from "fs";
 
 export default defineConfig({
 	dialect: 'postgresql',
@@ -11,6 +10,7 @@ export default defineConfig({
 		user: process.env.DB_USER!,
 		password: process.env.DB_PASSWORD!,
 		database: process.env.DB_DATABASE!,
+		port: Number(process.env.DB_PORT!) || 5432,
 		// url: process.env.DATABASE_URL!,
 		ssl: {
 			rejectUnauthorized: false
