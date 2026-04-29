@@ -4,8 +4,9 @@ import { ResourceModel } from './model'
 import { checkAndSetIdempotencyKey } from "../lib/idempotency"
 import { logger } from '@bogeychan/elysia-logger'
 
-export const resource = new Elysia({ prefix: '/v1/resource', tags: ['Resource'] }).use(logger())
-
+export const resource = new Elysia({ prefix: '/v1/resource', tags: ['Resource'] }).use(logger()).resolve(({ headers }) => {
+	return { traceId: headers['x-trace-id'] ?? crypto.randomUUID() }
+})
 	.post("/deprecated/", async ({ body, headers, status, log }) => {
 		let idempotencyKey = headers['idempotency-key'];
 		if (idempotencyKey) {
@@ -32,9 +33,10 @@ export const resource = new Elysia({ prefix: '/v1/resource', tags: ['Resource'] 
 		}
 	})
 
-	.post("/", async ({ body, headers, status, log }) => {
+	.post("/", async ({ body, headers, status, log, traceId }) => {
 		let idempotencyKey = headers['idempotency-key'] as string | undefined;
 		if (idempotencyKey) {
+
 			const isNewRequest = await checkAndSetIdempotencyKey(idempotencyKey);
 			if (!isNewRequest) {
 				log.info(`Duplicate create resource request: ${idempotencyKey}`)
@@ -43,7 +45,7 @@ export const resource = new Elysia({ prefix: '/v1/resource', tags: ['Resource'] 
 				});
 			}
 		}
-		return Resource.createRequestAsync(body)
+		return Resource.createRequestAsync(body, traceId)
 	}, {
 		detail: {
 			summary: "Create resource request",
@@ -58,7 +60,7 @@ export const resource = new Elysia({ prefix: '/v1/resource', tags: ['Resource'] 
 		}
 	})
 
-	.get("/list-request", ({ query, log }) => {
+	.get("/list-request", async ({ query, log }) => {
 		log.info({ query }, "List requests")
 		return Resource.listRequests(query)
 	}, {
