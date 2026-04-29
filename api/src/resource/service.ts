@@ -5,7 +5,7 @@ import { status } from "elysia";
 import { PublishCommand } from "@aws-sdk/client-sns";
 import { sns } from "../lib/sns";
 import { db } from "../lib/db";
-import { resourceRequest, assignTeam, requestedItem, requestedExtraItem, resourcePriority } from "../db/schema";
+import { resourceRequest, assignTeam, requestedItem, requestedExtraItem } from "../db/schema";
 import { getIncident } from "../lib/incident";
 
 export abstract class Resource {
@@ -59,16 +59,15 @@ export abstract class Resource {
 	}
 
 	static async createRequestAsync({
-		incidentId, items, extraItems, from, requestFor, description
-	}: ResourceModel['createRequestBody']) {
+		incidentId, items, extraItems, from, requestFor, description,
+	}: ResourceModel['createRequestBody'], traceId: String) {
 
 		const incident = await getIncident(incidentId);
 		console.log("incident_id: ", incident?.incident_id)
 
-		// Get priority later
-
 		const body = {
 			id: randomUUIDv7(),
+			traceId,
 			incidentId: incidentId,
 			priority: 'UNDECIDED',
 			requestFor: requestFor,
@@ -163,6 +162,12 @@ export abstract class Resource {
 				}
 			};
 		}));
+		if (requests.length === 0) {
+			throw status(404, {
+				message: `No requests found for incident ${incident_id}`
+			});
+		}
+
 
 		return results satisfies ResourceModel['listRequestsResponse200'];
 	}
