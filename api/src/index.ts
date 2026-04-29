@@ -3,9 +3,12 @@ import { resource } from "./resource";
 import { openapi } from '@elysiajs/openapi'
 import { logger } from "@bogeychan/elysia-logger";
 
-const app = new Elysia().use(openapi()).use(logger()).derive(({ headers }) => ({
+const app = new Elysia().use(openapi()).use(logger({
+	transport: {
+		target: 'pino-pretty'
+	}
+})).resolve(({ headers }) => ({
 	traceId: headers['x-trace-id'] ?? crypto.randomUUID()
-
 }))
 	.onAfterHandle(({ log, traceId, request, set }) => {
 		log.info({
@@ -27,16 +30,31 @@ const app = new Elysia().use(openapi()).use(logger()).derive(({ headers }) => ({
 		return new Response(
 			typeof response === 'string' ? response : JSON.stringify(response)
 		)
-	}).onError(({ code, error, set, traceId }) => {
-		if (code === 'VALIDATION') {
-			set.status = 400
-			return {
-				traceId,
-				message: error.message,
-				fields: error.all
-			}
-		}
-	}).get("/health", () => "Hello, it's working").get("/public-outbound", async () => {
+	})
+	// .onError(({ code, error, set, traceId, log }) => {
+	// 		if (code === 'VALIDATION') {
+	// 			set.status = 400
+	// 			return {
+	// 				traceId,
+	// 				message: error.message,
+	// 				fields: error.all
+	// 			}
+	// 		}
+	// 		if (code === 'NOT_FOUND') {
+	// 			set.status = 404
+	// 			return {
+	// 				traceId,
+	// 				message: 'Route not found'
+	// 			}
+	// 		}
+	// 		log!.error({ traceId, code, error: error }, 'Unhandled error')
+	// 		set.status = 500
+	// 		return {
+	// 			traceId,
+	// 			message: 'Internal server error'
+	// 		}
+	// 	})
+	.get("/health", () => "Hello, it's working").get("/public-outbound", async () => {
 		try {
 			const res = await fetch("https://api.ipify.org?format=json");
 			const data = await res.json();
