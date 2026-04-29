@@ -50,6 +50,7 @@ export const ResourceModel = {
 	}),
 	createRequestHeaders: t.Object({
 		'idempotency-key': t.String({ format: 'uuid', error: 'idempotency-key header must be a valid UUID' }),
+		'x-trace-id': t.Optional(t.String({ format: 'uuid', error: 'x-trace-id must be a valid UUID' })),
 	}),
 	createRequestResponse201: t.Object({
 		id: selectResourceSchema.properties.id,
@@ -64,7 +65,7 @@ export const ResourceModel = {
 		message: t.String()
 	}),
 	listRequestsHeaders: t.Object({
-		// authorization: t.String()
+		'x-trace-id': t.Optional(t.String({ format: 'uuid', error: 'x-trace-id must be a valid UUID' })),
 	}),
 	listRequestsQuery: t.Object({
 		incident_id: selectResourceSchema.properties.incidentId,
