@@ -1,23 +1,27 @@
 variable "create_topic_arn" {
   type = string
 }
-
 variable "event_topic_arn" {
   type = string
 }
-
 variable "create_queue_arn" {
   type = string
 }
-
 variable "create_function_name" {
   type = string
 }
-
 variable "insert_request_to_db_image_uri" {
   type = string
 }
-
+variable "update_priority_function_name" {
+  type = string
+}
+variable "update_priority_image_uri" {
+  type = string
+}
+variable "prioritization_event_queue_arn" {
+  type = string
+}
 variable "db_host" {}
 variable "db_user" {}
 variable "db_password" { sensitive = true }

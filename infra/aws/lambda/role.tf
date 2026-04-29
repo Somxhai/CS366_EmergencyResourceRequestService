@@ -1,6 +1,5 @@
 resource "aws_iam_role" "resource_request_lambda_role" {
   name = "resource_request_lambda_role"
-
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -33,7 +32,7 @@ resource "aws_iam_role_policy" "resource_request_lambda_permissions" {
           "sqs:GetQueueAttributes"
         ]
         Effect   = "Allow"
-        Resource = var.create_queue_arn
+        Resource = [var.create_queue_arn, var.prioritization_event_queue_arn]
       }
     ]
   })

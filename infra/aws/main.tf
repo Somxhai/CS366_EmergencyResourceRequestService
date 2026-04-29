@@ -37,11 +37,13 @@ module "ecr" {
 }
 
 module "lambda" {
-  source               = "./lambda"
-  create_topic_arn     = module.pubsub.main_topic_arn
-  event_topic_arn      = module.pubsub.event_topic_arn
-  create_queue_arn     = module.pubsub.create_queue_arn
-  create_function_name = "resource-request-inserter"
+  source                        = "./lambda"
+  create_topic_arn              = module.pubsub.main_topic_arn
+  event_topic_arn               = module.pubsub.event_topic_arn
+  create_queue_arn              = module.pubsub.create_queue_arn
+  create_function_name          = "resource-request-inserter"
+  update_priority_function_name = "resource-request-priority-updater"
+
 
   db_port     = var.db_port
   db_user     = var.db_user
@@ -52,6 +54,8 @@ module "lambda" {
   event_sns_topic_arn            = module.pubsub.event_topic_arn
   prioritization_topic_arn       = module.pubsub.to_prioritize_topic_arn
   insert_request_to_db_image_uri = module.ecr.resource_request_inserter_repo_url
+  update_priority_image_uri      = module.ecr.resource_request_priority_updater_repo_url
+  prioritization_event_queue_arn = module.pubsub.prioritization_event_queue_arn
 }
 
 module "pubsub" {
