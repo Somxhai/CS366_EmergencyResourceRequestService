@@ -1,0 +1,17 @@
+{
+	"Records": [
+		{
+			"messageAttributes": {
+				"correlationId": {
+					"stringValue": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+					"dataType": "String"
+				},
+				"messageType": {
+					"stringValue": "RescueRequestEvaluatedEvent",
+					"dataType": "String"
+				}
+			},
+			"body": "{\"Message\": \"{\\\"requestId\\\": \\\"550e8400-e29b-41d4-a716-446655440000\\\", \\\"incidentId\\\": \\\"123e4567-e89b-12d3-a456-426614174000\\\", \\\"evaluateId\\\": \\\"b26c6606-c16f-4f25-bb4c-3cd1c9f7005f\\\", \\\"requestType\\\": \\\"flood_rescue\\\", \\\"priorityScore\\\": 0.3, \\\"priorityLevel\\\": \\\"NORMAL\\\", \\\"evaluateReason\\\": \\\"test reason\\\", \\\"lastEvaluatedAt\\\": \\\"2026-03-22T07:18:39.670351+00:00\\\", \\\"description\\\": \\\"test\\\", \\\"location\\\": {\\\"latitude\\\": 11.111, \\\"longitude\\\": 11.222, \\\"province\\\": \\\"test province\\\", \\\"district\\\": \\\"test dist\\\", \\\"subdistrict\\\": \\\"test subdist\\\", \\\"addressLine\\\": \\\"test address\\\"}, \\\"peopleCount\\\": 1, \\\"specialNeeds\\\": [\\\"bedridden\\\", \\\"children\\\"]}\"}"
+		}
+	]
+}
