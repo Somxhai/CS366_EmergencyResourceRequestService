@@ -33,7 +33,7 @@ export const ResourceModel = {
 		incidentId: insertResourceSchema.properties.incidentId,
 		description: t.Optional(insertResourceSchema.properties.description),
 		requestFor: insertResourceSchema.properties.requestFor,
-		items: t.Array(ItemModel.body, { error: 'items must be an array' }),
+		items: t.Optional(t.Array(ItemModel.body, { error: 'items must be an array' })),
 		extraItems: t.Optional(t.Array(ItemModel.extra_item, { error: 'extraItems must be an array' })),
 		from: t.Object({
 			name: insertResourceSchema.properties.requesterName,
