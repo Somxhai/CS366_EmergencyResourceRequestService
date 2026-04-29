@@ -12,9 +12,7 @@ export default defineConfig({
 		database: process.env.DB_DATABASE!,
 		port: Number(process.env.DB_PORT!) || 5432,
 		// url: process.env.DATABASE_URL!,
-		ssl: {
-			rejectUnauthorized: false
-		}
+		ssl: process.env.NODE_ENV?.toLowerCase() === "dev" ? false : { rejectUnauthorized: false }
 	},
 });
 
