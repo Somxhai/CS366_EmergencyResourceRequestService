@@ -62,7 +62,7 @@ export abstract class Resource {
 		incidentId, items, extraItems, from, requestFor, description,
 	}: ResourceModel['createRequestBody'], traceId: string) {
 
-		const incident = await getIncident(incidentId);
+		const incident = await getIncident(incidentId, traceId);
 		console.log("incident_id: ", incident?.incident_id)
 
 		const body = {
