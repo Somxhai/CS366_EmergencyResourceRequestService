@@ -60,7 +60,7 @@ export abstract class Resource {
 
 	static async createRequestAsync({
 		incidentId, items, extraItems, from, requestFor, description,
-	}: ResourceModel['createRequestBody'], traceId: String) {
+	}: ResourceModel['createRequestBody'], traceId: string) {
 
 		const incident = await getIncident(incidentId);
 		console.log("incident_id: ", incident?.incident_id)
@@ -134,6 +134,13 @@ export abstract class Resource {
 			.from(resourceRequest)
 			.where(and(...conditions));
 
+		if (requests.length === 0) {
+			throw status(404, {
+				message: `No requests found for incident ${incident_id}`
+			});
+		}
+
+
 		const results = await Promise.all(requests.map(async (req) => {
 			const items = await db.select().from(requestedItem).where(eq(requestedItem.requestId, req.id));
 			const extraItems = await db.select().from(requestedExtraItem).where(eq(requestedExtraItem.requestId, req.id));
@@ -162,11 +169,6 @@ export abstract class Resource {
 				}
 			};
 		}));
-		if (requests.length === 0) {
-			throw status(404, {
-				message: `No requests found for incident ${incident_id}`
-			});
-		}
 
 
 		return results satisfies ResourceModel['listRequestsResponse200'];
