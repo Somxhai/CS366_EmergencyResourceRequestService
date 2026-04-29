@@ -4,9 +4,9 @@ import { openapi } from '@elysiajs/openapi'
 import { logger } from "@bogeychan/elysia-logger";
 
 const app = new Elysia().use(openapi()).use(logger({
-	transport: {
-		target: 'pino-pretty'
-	}
+	transport: process.env.NODE_ENV?.toLowerCase() === 'dev'
+		? { target: 'pino-pretty' }
+		: undefined
 })).resolve(({ headers }) => ({
 	traceId: headers['x-trace-id'] ?? crypto.randomUUID()
 }))
