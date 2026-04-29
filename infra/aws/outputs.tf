@@ -13,3 +13,7 @@ output "to_prioritize_topic_arm" {
 output "create_queue_arn" {
   value = module.pubsub.create_queue_arn
 }
+
+output "github_role_arn" {
+  value = module.oidc.role_arn
+}
