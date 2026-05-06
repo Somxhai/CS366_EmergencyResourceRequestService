@@ -127,6 +127,7 @@ export const publish_to_event = async (p: Payload) => {
 
 }
 export const publish_to_prioritize = async (p: Payload) => {
+	const now = new Date().toISOString();
 	await sns.send(new PublishCommand({
 		TopicArn: process.env.PRIORITIZATION_TOPIC_ARN,
 		Message: JSON.stringify({
@@ -146,13 +147,20 @@ export const publish_to_prioritize = async (p: Payload) => {
 				addressLine: p.address ?? null,
 			},
 			submittedAt: new Date().toISOString(),
+			header: {
+				messageType: "ResourceRequestCreated",
+				messageId: crypto.randomUUID(),
+				sentAt: now,
+				traceId: p.traceId,
+				version: 1,
+			}
 		}),
-		MessageAttributes: {
-			messageType: { DataType: "String", StringValue: "ResourceRequestCreated" },
-			messageId: { DataType: "String", StringValue: crypto.randomUUID() },
-			sentAt: { DataType: "String", StringValue: new Date().toISOString() },
-			traceId: { DataType: "String", StringValue: p.traceId },
-			version: { DataType: "String", StringValue: "1" },
-		}
+		// MessageAttributes: {
+		// 	messageType: { DataType: "String", StringValue: "ResourceRequestCreated" },
+		// 	messageId: { DataType: "String", StringValue: crypto.randomUUID() },
+		// 	sentAt: { DataType: "String", StringValue: new Date().toISOString() },
+		// 	traceId: { DataType: "String", StringValue: p.traceId },
+		// 	version: { DataType: "String", StringValue: "1" },
+		// }
 	}))
 }
