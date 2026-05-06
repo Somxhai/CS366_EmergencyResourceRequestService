@@ -103,16 +103,20 @@ EmergencyResourceRequest Service is responsible for receiving, collecting, and m
 
 ## 5. Service Architecture
 
+### Hybrid Deployment Model
+This service utilizes a hybrid cloud architecture, combining the cost-efficiency of self-hosting with the scalability of managed serverless components.
+
 ### Components
-- **ECS (Backend):** Elysia/Bun service handling API requests and business logic.
-- **PostgreSQL (RDS):** Persistent storage for requests and assignments.
-- **SNS/SQS:** Asynchronous flow for request creation to ensure high availability.
-- **AWS Lambda:** Worker process that consumes from SQS and inserts data into the DB.
-- **Redis (ElastiCache):** Used for idempotency key management.
+- **Main API (Coolify @ Hetzner VPS):** The core Elysia/Bun service is deployed via Coolify on a Hetzner VPS.
+- **Database (PostgreSQL @ Hetzner VPS):** Self-hosted PostgreSQL managed by Coolify on the same VPS.
+- **Cache (Redis @ Hetzner VPS):** Self-hosted Redis used for idempotency key management.
+- **Messaging (AWS SNS/SQS):** Managed AWS services used for reliable event distribution and queuing.
+- **Async Workers (AWS Lambda):** Serverless functions that consume events from SQS to perform background database writes.
+- **Container Registry (AWS ECR):** Stores the Docker images for the Lambda functions.
 
 ### Execution Flows
-1. **Synchronous Flow:** Used for fetching and managing requests. ECS communicates directly with the database.
-2. **Asynchronous Flow:** Used for creating requests. ECS publishes to SNS -> SNS fans out to SQS -> Lambda consumes from SQS and saves to RDS. This protects the system from spikes and ensures requests are not lost if the DB is under heavy load.
+1. **Synchronous Flow:** Used for fetching and managing requests. The API on Coolify communicates directly with the local PostgreSQL database.
+2. **Asynchronous Flow:** Used for creating requests. The API publishes an event to **AWS SNS** -> SNS fans out to **AWS SQS** -> **AWS Lambda** (triggered by SQS) connects back to the PostgreSQL instance on the VPS to save the request. This ensures high availability for the ingestion endpoint.
 
 ---
 
