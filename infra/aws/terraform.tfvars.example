@@ -1,0 +1,5 @@
+db_host              = "your-db-host"
+db_user              = "your-db-user"
+db_password          = "your-db-password"
+db_database          = "your-db-name"
+prioritization_topic = "arn:aws:sns:ap-southeast-2:xxx:prioritization-topic"

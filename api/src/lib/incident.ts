@@ -2,14 +2,14 @@ import { Incident } from "../incident/model";
 
 
 
-export const getIncident = async (incident_id: string): Promise<Incident | null> => {
+export const getIncident = async (incident_id: string, traceId: string): Promise<Incident | null> => {
 	try {
 		const response = await fetch(
 			`${process.env.INCIDENT_SERVICE_URL}/incidents/${incident_id}`,
 			{
 				method: "GET",
 				headers: {
-					"X-IncidentTNX-Id": crypto.randomUUID(),
+					"X-IncidentTNX-Id": traceId,
 					"api-key": "123",
 					"Content-Type": "application/json"
 				},

@@ -5,7 +5,7 @@ import { status } from "elysia";
 import { PublishCommand } from "@aws-sdk/client-sns";
 import { sns } from "../lib/sns";
 import { db } from "../lib/db";
-import { resourceRequest, assignTeam, requestedItem, requestedExtraItem, resourcePriority } from "../db/schema";
+import { resourceRequest, assignTeam, requestedItem, requestedExtraItem } from "../db/schema";
 import { getIncident } from "../lib/incident";
 
 export abstract class Resource {
@@ -59,16 +59,15 @@ export abstract class Resource {
 	}
 
 	static async createRequestAsync({
-		incidentId, items, extraItems, from, requestFor, description
-	}: ResourceModel['createRequestBody']) {
+		incidentId, items, extraItems, from, requestFor, description,
+	}: ResourceModel['createRequestBody'], traceId: string) {
 
-		const incident = await getIncident(incidentId);
+		const incident = await getIncident(incidentId, traceId);
 		console.log("incident_id: ", incident?.incident_id)
-
-		// Get priority later
 
 		const body = {
 			id: randomUUIDv7(),
+			traceId,
 			incidentId: incidentId,
 			priority: 'UNDECIDED',
 			requestFor: requestFor,
@@ -135,6 +134,13 @@ export abstract class Resource {
 			.from(resourceRequest)
 			.where(and(...conditions));
 
+		if (requests.length === 0) {
+			throw status(404, {
+				message: `No requests found for incident ${incident_id}`
+			});
+		}
+
+
 		const results = await Promise.all(requests.map(async (req) => {
 			const items = await db.select().from(requestedItem).where(eq(requestedItem.requestId, req.id));
 			const extraItems = await db.select().from(requestedExtraItem).where(eq(requestedExtraItem.requestId, req.id));
@@ -163,6 +169,7 @@ export abstract class Resource {
 				}
 			};
 		}));
+
 
 		return results satisfies ResourceModel['listRequestsResponse200'];
 	}

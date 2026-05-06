@@ -1,11 +1,7 @@
 
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import fs from "fs";
-import path from "path";
 
-const certPath = path.resolve(process.cwd(), 'cert/global-bundle.pem');
-const ca = fs.readFileSync(certPath);
 export const db = drizzle({
 	connection: {
 
@@ -13,10 +9,8 @@ export const db = drizzle({
 		user: process.env.DB_USER!,
 		password: process.env.DB_PASSWORD!,
 		database: process.env.DB_DATABASE!,
+		port: Number(process.env.DB_PORT!) || 5432,
 		// connectionString: process.env.DATABASE_URL!,
-		ssl: {
-			ca: ca.toString(),
-			rejectUnauthorized: false
-		}
+		ssl: process.env.NODE_ENV?.toLowerCase() === 'dev' ? false : { rejectUnauthorized: false }
 	}
 });

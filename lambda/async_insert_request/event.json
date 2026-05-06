@@ -1,0 +1,7 @@
+{
+	"Records": [
+		{
+			"body": "{\"Message\": \"{\\\"type\\\": \\\"resource_request.create\\\", \\\"payload\\\": {\\\"id\\\": \\\"550e8400-e29b-41d4-a716-446655440000\\\", \\\"traceId\\\": \\\"6ba7b810-9dad-11d1-80b4-00c04fd430c8\\\", \\\"incidentId\\\": \\\"123e4567-e89b-12d3-a456-426614174000\\\", \\\"priority\\\": \\\"UNDECIDED\\\", \\\"requestFor\\\": \\\"flood_rescue\\\", \\\"requesterName\\\": \\\"John\\\", \\\"phone\\\": \\\"0812345678\\\", \\\"description\\\": \\\"test\\\", \\\"address\\\": \\\"test address\\\", \\\"latitude\\\": 11.11, \\\"longitude\\\": 22.22, \\\"items\\\": {\\\"create\\\": []}, \\\"extraItems\\\": {\\\"create\\\": []}, \\\"verified\\\": false}}\"}"
+		}
+	]
+}

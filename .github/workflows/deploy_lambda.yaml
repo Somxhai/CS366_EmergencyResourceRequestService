@@ -1,0 +1,61 @@
+name: Deploy Lambda
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      matrix:
+        include:
+          - path: inserter
+            ecr_repo: ECR_REPOSITORY_INSERTER
+            function_name: INSERTER_LAMBDA_FUNCTION_NAME
+          - path: other-lambda
+            ecr_repo: ECR_REPOSITORY_OTHER
+            function_name: OTHER_LAMBDA_FUNCTION_NAME
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --name-only HEAD~1 HEAD | grep -q "^${{ matrix.path }}/"; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Configure AWS credentials
+        if: steps.changes.outputs.changed == 'true'
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Login to ECR
+        if: steps.changes.outputs.changed == 'true'
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          IMAGE_URI=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars[matrix.ecr_repo] }}:${{ github.sha }}
+          docker build --platform linux/amd64 -t $IMAGE_URI ./${{ matrix.path }}
+          docker push $IMAGE_URI
+
+      - name: Update Lambda
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          aws lambda update-function-code \
+            --function-name ${{ vars[matrix.function_name] }} \
+            --image-uri ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars[matrix.ecr_repo] }}:${{ github.sha }} \
+            --region ${{ vars.AWS_REGION }}
