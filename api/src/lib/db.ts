@@ -11,6 +11,6 @@ export const db = drizzle({
 		database: process.env.DB_DATABASE!,
 		port: Number(process.env.DB_PORT!) || 5432,
 		// connectionString: process.env.DATABASE_URL!,
-		ssl: process.env.PROD_DB.toLowerCase() === 'YES' ? false : { rejectUnauthorized: false }
+		ssl: process.env.PROD_DB.toLowerCase() === 'yes' ? false : { rejectUnauthorized: false }
 	}
 });
